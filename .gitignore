@@ -1,0 +1,39 @@
+
+
+
+
+
+node_modules/
+dist
+.turbo
+.env
+pdfs/**
+src/generated/**
+.langgraph_api
+
+# Agent context (local)
+AGENTS.md
+
+# Personal docs
+account-statement_*.pdf
+LangSmith-*.png
+
+# Cleanup
+biome.json
+tsconfig.tsbuildinfo
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
+assistant-ui/CLAUDE.md
+
+# Claude agent context (local)
+.claude/
+CLAUDE.md
+
+# Local docs (not for remote)
+documentation/
+okf/
+
+# PDFs (local analysis, not source)
+*.pdf

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Lint-staged: Auto-fix linting and formatting on staged files only (fast!)
+pnpm exec lint-staged || {
+  echo "❌ Lint-staged failed. Fix errors above."
+  exit 1
+}
+
+echo "✅ Pre-commit checks passed! (TypeScript check will run on push)"

@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🛡️  Running pre-push checks..."
+
+# Full lint (warnings don't block)
+pnpm run lint || {
+  echo "⚠️  Lint warnings found. Run 'pnpm run lint:fix' to auto-fix."
+}
+
+# Build check (BLOCKING)
+pnpm run build || {
+  echo "❌ Build failed. Fix build errors above."
+  exit 1
+}
+
+# Security audit (pnpm specific)
+pnpm audit --audit-level=high --production || {
+  echo "⚠️  Security vulnerabilities found. Review and update dependencies."
+}
+
+# Secret detection (basic grep)
+if git diff --cached --name-only | grep -E '\.(env|key|pem|credentials)$'; then
+  echo "⚠️  Warning: You're committing files that may contain secrets!"
+  read -p "  → Are you sure you want to push? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Push cancelled."
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-push checks passed!"
