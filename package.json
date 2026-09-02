@@ -1,5 +1,5 @@
 {
-  "name": "basic_langchain_agent_with_tools",
+  "name": "versatile_agent",
   "version": "1.0.0",
   "description": "LangGraph agent with tools (TypeScript 7, pnpm)",
   "license": "MIT",
