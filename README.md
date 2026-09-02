@@ -212,8 +212,7 @@ STRIPE_SECRET_KEY=sk_live_...
 | **Top 50** | *"Show me the top 50 cryptos in EUR"* | `coinGeckoMarket` |
 | **By category** | *"What are the top 20 DeFi tokens?"* | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
 | **Gaming tokens** | *"List the top gaming tokens by market cap"* | `coinGeckoMarket` (category: `gaming`) |
-| **NFT tokens** | *"Top 5 NFT tokens ranked by market cap"* | `coinGeckoMarket` (category: `non-fungible-tokens-nft`) |
-| **Pagination** | *"Page 2 of the top cryptos"* | `coinGeckoMarket` (page param) |
+| **NFT tokens** | *"Top 5 NFT tokens ranked by market cap"* | `coinGeckoMarket` (category: `non-fungible-tokens-nft`) 
 | **Combined** | *"Show me the top 10 cryptos and the price of bitcoin in EUR and USD"* | Both tools |
 
 ### 💬 Example queries — Weather
