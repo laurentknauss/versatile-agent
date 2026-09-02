@@ -193,36 +193,6 @@ const forecast = dates.map(date => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
-    const shownDays = dates.length;
-    const label = shownDays < forecastDays
-      ? `(prévisions disponibles pour les ${shownDays} prochains jours)`
-      : `(prévisions pour les ${forecastDays} prochains jours, à partir de demain)`;
-
-    return `🌤️ **Météo pour ${locationName}** ${label} :\n${forecastList.join('\n')}`;
-    */
 const shownDays = dates.length;
 
 return {
