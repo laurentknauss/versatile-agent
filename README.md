@@ -92,7 +92,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
   forecastStarting: "tomorrow",  // J+1 shift (skip today)
   forecast: [
     {
-      date: "2024-06-02",
+      date: "2026-06-02",
       temperature: { averageCelsius: 22, minCelsius: 20, maxCelsius: 24, feelsLikeCelsius: 21 },
       weather: "pluie légère",
       wind: { speedKmh: 18, directionDegrees: 220, direction: "↗️ SW" },
@@ -175,12 +175,11 @@ pnpm dev:frontend
 ### Variables d'environnement
 
 ```bash
-OPENAI_API_KEY=sk-...                          # Obligatoire (GPT-5.1)
-TAVILY_API_KEY=tvly-...                        # Obligatoire (web search)
-OPENWEATHERMAP_API_KEY=...                      # Optionnel (météo)
-COINGECKO_API_KEY=CG-...                        # Optionnel (crypto)
-STRIPE_SECRET_KEY=sk_live_...                   # Optionnel (Stripe)
-BRAVE_SEARCH_API_KEY=BSA...                     # Optionnel (Brave search, commenté)
+OPENAI_API_KEY=sk-...                       
+TAVILY_API_KEY=tvly-...                        
+OPENWEATHERMAP_API_KEY=...                  
+COINGECKO_API_KEY=CG-...                      
+STRIPE_SECRET_KEY=sk_live_...                  
 ```
 
 ---
@@ -208,7 +207,7 @@ BRAVE_SEARCH_API_KEY=BSA...                     # Optionnel (Brave search, comme
 | **Single price** | *"What's the price of bitcoin in USD?"* | `coinGeckoPrice` |
 | **Multi-coin** | *"Give me prices for bitcoin, ethereum, solana, chainlink and cardano in EUR"* | `coinGeckoPrice` |
 | **Multi-currency** | *"Compare bitcoin price in USD, EUR and GBP"* | `coinGeckoPrice` |
-| **Price + change** | *"What's the price of avalanche-2 and its 24h change?"* | `coinGeckoPrice` |
+| **Price + change** | *"What's the price of avalanche token  and its 24h change?"* | `coinGeckoPrice` |
 | **Top market cap** | *"What are the top 10 cryptocurrencies by market cap?"* | `coinGeckoMarket` |
 | **Top 50** | *"Show me the top 50 cryptos in EUR"* | `coinGeckoMarket` |
 | **By category** | *"What are the top 20 DeFi tokens?"* | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
@@ -223,7 +222,7 @@ BRAVE_SEARCH_API_KEY=BSA...                     # Optionnel (Brave search, comme
 |---|---|---|
 | *"What's the weather in Paris?"* | `openWeatherMap` | Température, vent, humidité, pluie, ressenti |
 | *"Forecast for Tokyo next 5 days"* | `openWeatherMap` | J+1 shift, prévisions complètes |
-| *"Y a-t-il des risques de précipitations à Marseille ?"* | `openWeatherMap` | Pluviométrie mm, probabilité % |
+| *"Y a-t-il des risques de précipitations à Marseille dans les 3 prochains jours ?"* | `openWeatherMap` | Pluviométrie mm, probabilité % |
 | *"Météo détaillée à Montréal sur 4 jours"* | `openWeatherMap` | Vent, humidité, ressenti, pluie |
 
 ### 💬 Example queries — Web search & utilities
@@ -265,7 +264,7 @@ Le backend expose un **Studio visuel** à `http://localhost:2024` :
 
 ## 📚 Documentation locale
 
-Le dossier `okf/` contient la documentation auto-suffisante au format **Open Knowledge** :
+Le dossier `okf/` contient la documentation auto-suffisante au format google  **Open Knowledge** :
 
 - [Spécification](okf/SPEC.md)
 - [Architecture](okf/concepts/architecture.md)
