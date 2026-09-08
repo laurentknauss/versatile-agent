@@ -7,8 +7,9 @@ import {
   useLangGraphRuntime,
   type LangChainMessage,
 } from "@assistant-ui/react-langgraph";
-import { Thread } from "@/components/assistant-ui/elements/thread.aui";
+import { ChatGPT } from "@/components/examples/chatgpt";
 import { createClient } from "@/lib/chatApi";
+import { createLangGraphThreadListAdapter } from "@/lib/langgraph-thread-list-adapter";
 
 const ASSISTANT_ID = process.env["NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID"]!;
 
@@ -20,6 +21,10 @@ export function Assistant() {
         client,
         assistantId: ASSISTANT_ID,
       }),
+    [client],
+  );
+  const threadListAdapter = useMemo(
+    () => createLangGraphThreadListAdapter(client),
     [client],
   );
 
@@ -38,11 +43,15 @@ export function Assistant() {
         messages: state.values.messages,
       };
     },
+    // Owns the sidebar thread list: list/create/delete/title all go through
+    // the LangGraph client (the `create` and `delete` options above are
+    // ignored while this adapter is set).
+    unstable_threadListAdapter: threadListAdapter,
   });
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <Thread />
+      <ChatGPT />
     </AssistantRuntimeProvider>
   );
 }
