@@ -2,8 +2,8 @@ import { AIMessage, SystemMessage } from '@langchain/core/messages';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { ChatOpenAI } from '@langchain/openai';
 
-import { END, MessagesAnnotation, START, StateGraph } from '@langchain/langgraph';
-import { MemorySaver } from '@langchain/langgraph-checkpoint';
+import { END, MessagesAnnotation, START, StateGraph, MemorySaver } from '@langchain/langgraph';
+
 import { ALL_TOOLS_LIST } from './tools/tools';
 
 // LangGraph CLI / langgraphjs dev charge .env automatiquement via langgraph.json
