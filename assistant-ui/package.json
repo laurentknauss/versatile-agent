@@ -19,6 +19,7 @@
     "@langchain/core": "^1.2.9",
     "@langchain/langgraph-sdk": "^1.9.31",
     "@langchain/react": "^1.0.32",
+    "assistant-stream": "^0.3.41",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",
