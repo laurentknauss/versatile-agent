@@ -6,17 +6,18 @@ import { openWeatherMapTool } from './weatherTool';
 import { ALL_STRIPE_TOOLS } from './stripeTool';
 import { randomNumberTool } from './randomNumberTool';
 import { tavilySearchTool } from './tavilyTool';
+import { recallMemoriesTool, saveMemoryTool } from './memoryTools';
 
 const additionFunc = async ({ a, b }: { a: number; b: number }) => {
   return (a + b).toString();
 };
 
 export const additionTool = tool(additionFunc, {
-  name: "additionTool",
-  description: "Adds two numbers together.",
+  name: 'additionTool',
+  description: 'Adds two numbers together.',
   schema: z.object({
-    a: z.number().describe("The first number to add."),
-    b: z.number().describe("The second number to add."),
+    a: z.number().describe('The first number to add.'),
+    b: z.number().describe('The second number to add.'),
   }),
 });
 
@@ -29,8 +30,8 @@ const currentTimeFunc = async () => {
 };
 
 export const currentTimeTool = tool(currentTimeFunc, {
-  name: "currentTime",
-  description: "Returns the current local time in HH:MM:SS format.",
+  name: 'currentTime',
+  description: 'Returns the current local time in HH:MM:SS format.',
   schema: z.object({}),
 });
 
@@ -43,4 +44,7 @@ export const ALL_TOOLS_LIST = [
   currentTimeTool,
   tavilySearchTool,
   ...ALL_STRIPE_TOOLS,
+  // Long-term memory tools (MongoDB Atlas). Only exposed when the store is
+  // configured so the model never calls them without a backing store.
+  ...(process.env.MONGODB_ATLAS_URI ? [saveMemoryTool, recallMemoriesTool] : []),
 ];

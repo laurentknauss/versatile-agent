@@ -38,6 +38,20 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/**', 'lib/**', 'dist/**', '.husky/**', 'utils.ts'],
+    ignores: [
+      'node_modules/**',
+      'lib/**',
+      'dist/**',
+      '.husky/**',
+      'utils.ts',
+      '**/.next/**',
+      '**/.turbo/**',
+      '**/coverage/**',
+      '**/.langgraph_api/**',
+      // assistant-ui est un workspace séparé, linté par son propre oxlint.
+      // Il garde typescript 7 natif (requis par next build), incompatible
+      // avec typescript-eslint (qui utilise l'API TS 6 côté racine).
+      'assistant-ui/**',
+    ],
   },
 ];
