@@ -82,6 +82,12 @@ const EmptyState: FC = () => {
   return (
     <div className="flex grow flex-col items-center justify-center px-4 pb-[16vh]">
       <div className="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-6">
+        <img
+          src="/butler-versatileagent.png"
+          alt=""
+          aria-hidden="true"
+          className="mx-auto h-48 w-auto drop-shadow-md"
+        />
         <h1
           className="text-center text-3xl font-semibold text-white dark:text-[#ececec]"
           style={{ fontFamily: 'var(--font-poppins)' }}
