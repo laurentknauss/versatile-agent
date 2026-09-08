@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import {
   ActionBarPrimitive,
   ActionBarMorePrimitive,
@@ -11,10 +11,10 @@ import {
   MessagePrimitive,
   ThreadPrimitive,
   useAui,
-} from "@assistant-ui/react";
-import { type FC } from "react";
-import { TooltipIconButton } from "@/components/assistant-ui/elements/tooltip-icon-button";
-import { useAttachmentSrc } from "./use-attachment-src";
+} from '@assistant-ui/react';
+import { type FC } from 'react';
+import { TooltipIconButton } from '@/components/assistant-ui/elements/tooltip-icon-button';
+import { useAttachmentSrc } from './use-attachment-src';
 import {
   ArrowUpIcon,
   AudioLines,
@@ -34,33 +34,40 @@ import {
   ThumbsUp,
   Volume2,
   XIcon,
-} from "lucide-react";
-import { MarkdownText } from "@/components/assistant-ui/elements/markdown-text";
-import { ToolFallback } from "@/components/assistant-ui/elements/tool-fallback.aui";
-import { CloneThreadShell } from "./clone-thread-shell";
+} from 'lucide-react';
+import { MarkdownText } from '@/components/assistant-ui/elements/markdown-text';
+import { ToolFallback } from '@/components/assistant-ui/elements/tool-fallback.aui';
+import { CloneThreadShell } from './clone-thread-shell';
 
 export const ChatGPT: FC = () => {
   return (
     <CloneThreadShell>
-      <ThreadPrimitive.Root className="flex h-full flex-col items-stretch bg-white px-4 text-[#0d0d0d] dark:bg-black dark:text-[#ececec]">
+      <ThreadPrimitive.Root className="aui-chat-gradient flex h-full flex-col items-stretch bg-[linear-gradient(160deg,#0e4c92_0%,#1877f2_55%,#7db4f5_100%)] px-4 text-white dark:bg-black dark:text-[#ececec]">
+        <div className="hidden shrink-0 items-center justify-center px-1 pt-4 pb-2 md:flex">
+          <img
+            src="/logo-versatileagent.png"
+            alt="Versatile Agent"
+            className="max-h-24 w-auto max-w-full drop-shadow-md"
+          />
+        </div>
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <EmptyState />
         </AuiIf>
 
         <AuiIf condition={(s) => !s.thread.isEmpty}>
-          <ThreadPrimitive.Viewport className="flex grow flex-col gap-8 overflow-y-scroll pt-16">
+          <ThreadPrimitive.Viewport className="flex grow flex-col gap-8 overflow-y-scroll pt-4">
             <ThreadPrimitive.Messages>
               {({ message }) => {
                 if (message.composer.isEditing) return <EditComposer />;
-                if (message.role === "user") return <UserMessage />;
+                if (message.role === 'user') return <UserMessage />;
                 return <AssistantMessage />;
               }}
             </ThreadPrimitive.Messages>
 
-            <ThreadPrimitive.ViewportFooter className="sticky bottom-0 mx-auto mt-auto flex w-full max-w-3xl flex-col gap-2 overflow-visible rounded-t-3xl bg-white pb-2 dark:bg-black">
+            <ThreadPrimitive.ViewportFooter className="sticky bottom-0 mx-auto mt-auto flex w-full max-w-3xl flex-col gap-2 overflow-visible rounded-t-3xl pb-2">
               <ThreadScrollToBottom />
-              <Composer placeholder="Ask anything" />
-              <p className="text-center text-xs text-[#5d5d5d] dark:text-[#afafaf]">
+              <Composer placeholder="Posez votre question…" />
+              <p className="text-center text-xs text-white/70 dark:text-[#afafaf]">
                 ChatGPT can make mistakes. Check important info.
               </p>
             </ThreadPrimitive.ViewportFooter>
@@ -75,10 +82,13 @@ const EmptyState: FC = () => {
   return (
     <div className="flex grow flex-col items-center justify-center px-4 pb-[16vh]">
       <div className="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-6">
-        <h1 className="text-center text-2xl leading-7 font-normal text-[#0d0d0d] dark:text-[#ececec]">
-          Where should we begin?
+        <h1
+          className="text-center text-3xl font-semibold text-white dark:text-[#ececec]"
+          style={{ fontFamily: 'var(--font-poppins)' }}
+        >
+          Comment puis-je vous aider&nbsp;?
         </h1>
-        <Composer placeholder="Ask anything" />
+        <Composer placeholder="Posez votre question…" />
       </div>
     </div>
   );
@@ -89,9 +99,7 @@ const Composer: FC<{ placeholder: string }> = ({ placeholder }) => {
     <ComposerPrimitive.Root className="group/composer flex w-full flex-col rounded-[28px] border border-[#e5e5e5] bg-white px-2 py-2 focus-within:border-[#d0d0d0] dark:border-transparent dark:bg-[#212121] dark:focus-within:border-transparent">
       <AuiIf condition={(s) => s.composer.attachments.length > 0}>
         <div className="flex flex-row flex-wrap gap-2 px-1 pt-1 pb-2">
-          <ComposerPrimitive.Attachments
-            components={{ Attachment: ChatGPTAttachmentUI }}
-          />
+          <ComposerPrimitive.Attachments components={{ Attachment: ChatGPTAttachmentUI }} />
         </div>
       </AuiIf>
 
@@ -132,9 +140,7 @@ const ComposerPrimaryAction: FC = () => {
         </ComposerPrimitive.Cancel>
       </AuiIf>
 
-      <AuiIf
-        condition={(s) => !s.thread.isRunning && s.composer.dictation != null}
-      >
+      <AuiIf condition={(s) => !s.thread.isRunning && s.composer.dictation != null}>
         <ComposerPrimitive.StopDictation
           className="flex size-9 items-center justify-center rounded-full bg-[#0d0d0d] text-white dark:bg-white dark:text-black"
           aria-label="Stop dictation"
@@ -145,9 +151,7 @@ const ComposerPrimaryAction: FC = () => {
 
       <AuiIf
         condition={(s) =>
-          !s.thread.isRunning &&
-          s.composer.dictation == null &&
-          !s.composer.isEmpty
+          !s.thread.isRunning && s.composer.dictation == null && !s.composer.isEmpty
         }
       >
         <ComposerPrimitive.Send className="flex size-9 items-center justify-center rounded-full bg-[#0d0d0d] text-white transition-opacity disabled:opacity-30 dark:bg-white dark:text-black">
@@ -156,11 +160,7 @@ const ComposerPrimaryAction: FC = () => {
       </AuiIf>
 
       <AuiIf
-        condition={(s) =>
-          !s.thread.isRunning &&
-          s.composer.dictation == null &&
-          s.composer.isEmpty
-        }
+        condition={(s) => !s.thread.isRunning && s.composer.dictation == null && s.composer.isEmpty}
       >
         <ComposerPrimitive.Dictate asChild>
           <TooltipIconButton
@@ -205,12 +205,10 @@ const UserMessage: FC = () => {
   return (
     <MessagePrimitive.Root className="relative mx-auto flex w-full max-w-3xl flex-col items-end gap-1">
       <div className="flex flex-row flex-wrap justify-end gap-2">
-        <MessagePrimitive.Attachments
-          components={{ Attachment: ChatGPTAttachmentUI }}
-        />
+        <MessagePrimitive.Attachments components={{ Attachment: ChatGPTAttachmentUI }} />
       </div>
 
-      <div className="max-w-[70%] rounded-[22px] bg-[#0d0d0d] px-4 py-2.5 leading-6 text-white dark:bg-[#ececec] dark:text-[#0d0d0d]">
+      <div className="max-w-[70%] rounded-[22px] bg-white px-4 py-2.5 leading-6 text-[#0d0d0d] shadow-sm dark:bg-[#ececec] dark:text-[#0d0d0d]">
         <MessagePrimitive.Parts />
       </div>
 
@@ -222,11 +220,7 @@ const UserMessage: FC = () => {
           className="flex items-center"
         >
           <ActionBarPrimitive.Copy asChild>
-            <TooltipIconButton
-              tooltip="Copy"
-              side="top"
-              className={assistantActionClassName}
-            >
+            <TooltipIconButton tooltip="Copy" side="top" className={assistantActionClassName}>
               <AuiIf condition={(s) => s.message.isCopied}>
                 <CheckIcon className="size-5" />
               </AuiIf>
@@ -236,11 +230,7 @@ const UserMessage: FC = () => {
             </TooltipIconButton>
           </ActionBarPrimitive.Copy>
           <ActionBarPrimitive.Edit asChild>
-            <TooltipIconButton
-              tooltip="Edit"
-              side="top"
-              className={assistantActionClassName}
-            >
+            <TooltipIconButton tooltip="Edit" side="top" className={assistantActionClassName}>
               <PencilIcon className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Edit>
@@ -254,14 +244,14 @@ const UserMessage: FC = () => {
 
 const EditComposer: FC = () => {
   return (
-    <ComposerPrimitive.Root className="mx-auto flex w-full max-w-3xl flex-col justify-end gap-1 rounded-3xl bg-[#e9e9e9]/50 dark:bg-[#323232]">
-      <ComposerPrimitive.Input className="text-foreground flex h-8 w-full resize-none bg-transparent p-5 pb-0 outline-none dark:text-white" />
+    <ComposerPrimitive.Root className="mx-auto flex w-full max-w-3xl flex-col justify-end gap-1 rounded-3xl bg-white/95 shadow-sm dark:bg-[#323232]">
+      <ComposerPrimitive.Input className="flex h-8 w-full resize-none bg-transparent p-5 pb-0 text-[#0d0d0d] outline-none dark:text-white" />
 
       <div className="m-3 mt-2 flex items-center justify-center gap-2 self-end">
-        <ComposerPrimitive.Cancel className="bg-background text-foreground hover:bg-muted rounded-full px-3 py-2 text-sm font-semibold dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800">
+        <ComposerPrimitive.Cancel className="rounded-full bg-zinc-200/80 px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800">
           Cancel
         </ComposerPrimitive.Cancel>
-        <ComposerPrimitive.Send className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-3 py-2 text-sm font-semibold dark:bg-white dark:text-black dark:hover:bg-white/90">
+        <ComposerPrimitive.Send className="rounded-full bg-[#0d0d0d] px-3 py-2 text-sm font-semibold text-white hover:bg-[#0d0d0d]/90 dark:bg-white dark:text-black dark:hover:bg-white/90">
           Send
         </ComposerPrimitive.Send>
       </div>
@@ -270,17 +260,16 @@ const EditComposer: FC = () => {
 };
 
 const assistantActionClassName =
-  "flex size-8 items-center justify-center rounded-lg text-[#5d5d5d] transition-colors hover:bg-black/[0.07] hover:text-[#5d5d5d] dark:text-[#cdcdcd] dark:hover:bg-white/15 dark:hover:text-[#cdcdcd]";
+  'flex size-8 items-center justify-center rounded-lg text-white/80 transition-colors hover:bg-white/20 hover:text-white dark:text-[#cdcdcd] dark:hover:bg-white/15 dark:hover:text-[#cdcdcd]';
 
 const AssistantMessage: FC = () => {
   return (
     <MessagePrimitive.Root className="relative mx-auto flex w-full max-w-3xl flex-col">
-      <div className="text-[#0d0d0d] dark:text-[#ececec]">
+      <div className="text-white dark:text-[#ececec]">
         <MessagePrimitive.Parts>
           {({ part }) => {
-            if (part.type === "text") return <MarkdownText />;
-            if (part.type === "tool-call")
-              return part.toolUI ?? <ToolFallback {...part} />;
+            if (part.type === 'text') return <MarkdownText />;
+            if (part.type === 'tool-call') return part.toolUI ?? <ToolFallback {...part} />;
             return null;
           }}
         </MessagePrimitive.Parts>
@@ -289,11 +278,7 @@ const AssistantMessage: FC = () => {
       <div className="-ml-2 flex items-center pt-1">
         <ActionBarPrimitive.Root hideWhenRunning className="flex items-center">
           <ActionBarPrimitive.Copy asChild>
-            <TooltipIconButton
-              tooltip="Copy"
-              side="top"
-              className={assistantActionClassName}
-            >
+            <TooltipIconButton tooltip="Copy" side="top" className={assistantActionClassName}>
               <AuiIf condition={(s) => s.message.isCopied}>
                 <CheckIcon className="size-5" />
               </AuiIf>
@@ -321,27 +306,15 @@ const AssistantMessage: FC = () => {
             </TooltipIconButton>
           </ActionBarPrimitive.FeedbackNegative>
           <ActionBarPrimitive.Speak asChild>
-            <TooltipIconButton
-              tooltip="Read aloud"
-              side="top"
-              className={assistantActionClassName}
-            >
+            <TooltipIconButton tooltip="Read aloud" side="top" className={assistantActionClassName}>
               <Volume2 className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Speak>
-          <TooltipIconButton
-            tooltip="Share"
-            side="top"
-            className={assistantActionClassName}
-          >
+          <TooltipIconButton tooltip="Share" side="top" className={assistantActionClassName}>
             <Share className="size-5" />
           </TooltipIconButton>
           <ActionBarPrimitive.Reload asChild>
-            <TooltipIconButton
-              tooltip="Regenerate"
-              side="top"
-              className={assistantActionClassName}
-            >
+            <TooltipIconButton tooltip="Regenerate" side="top" className={assistantActionClassName}>
               <RefreshCwIcon className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Reload>
@@ -352,7 +325,7 @@ const AssistantMessage: FC = () => {
                 aria-label="More"
                 className={cn(
                   assistantActionClassName,
-                  "data-[state=open]:bg-black/[0.07] dark:data-[state=open]:bg-white/15",
+                  'data-[state=open]:bg-black/[0.07] dark:data-[state=open]:bg-white/15'
                 )}
               >
                 <MoreHorizontal className="size-5" />
@@ -384,8 +357,8 @@ const BranchPicker: FC<{ className?: string }> = ({ className }) => {
     <BranchPickerPrimitive.Root
       hideWhenSingleBranch
       className={cn(
-        "text-muted-foreground inline-flex items-center text-sm font-semibold dark:text-[#b4b4b4]",
-        className,
+        'inline-flex items-center text-sm font-semibold text-white/80 dark:text-[#b4b4b4]',
+        className
       )}
     >
       <BranchPickerPrimitive.Previous asChild>
@@ -405,26 +378,22 @@ const BranchPicker: FC<{ className?: string }> = ({ className }) => {
 
 const ChatGPTAttachmentUI: FC = () => {
   const aui = useAui();
-  const isComposer = aui.attachment.source !== "message";
+  const isComposer = aui.attachment.source !== 'message';
   const src = useAttachmentSrc();
 
   return (
     <AttachmentPrimitive.Root className="group/attachment relative">
       <div className="bg-secondary flex items-center gap-2 overflow-hidden rounded-2xl border dark:bg-white/5">
-        <AuiIf condition={(s) => s.attachment.type === "image"}>
+        <AuiIf condition={(s) => s.attachment.type === 'image'}>
           {src ? (
-            <img
-              className="size-32 rounded-md object-cover"
-              alt="Attachment"
-              src={src}
-            />
+            <img className="size-32 rounded-md object-cover" alt="Attachment" src={src} />
           ) : (
             <div className="flex h-full w-12 items-center justify-center rounded-md">
               <AttachmentPrimitive.unstable_Thumb className="text-xs" />
             </div>
           )}
         </AuiIf>
-        <AuiIf condition={(s) => s.attachment.type !== "image"}>
+        <AuiIf condition={(s) => s.attachment.type !== 'image'}>
           <div className="bg-background flex h-full w-12 items-center justify-center rounded-[9px] text-[#6b6b6b] dark:bg-[#3a3a3a] dark:text-[#9a9a9a]">
             <AttachmentPrimitive.unstable_Thumb className="text-xs" />
           </div>
