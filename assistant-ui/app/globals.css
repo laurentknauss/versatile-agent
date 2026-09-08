@@ -155,3 +155,18 @@
     font-optical-sizing: auto;
   }
 }
+
+/* Zone de conversation à dégradé bleu (Facebook-like) : force les couleurs
+   du markdown rendu par-dessus pour rester lisible sur fond bleu. */
+.aui-chat-gradient .aui-md-a {
+  color: #fff;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+.aui-chat-gradient .aui-md-blockquote {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.aui-chat-gradient .aui-md code:not(pre code) {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
