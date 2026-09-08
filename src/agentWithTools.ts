@@ -3,8 +3,27 @@ import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { ChatOpenAI } from '@langchain/openai';
 
 import { END, MessagesAnnotation, START, StateGraph, MemorySaver } from '@langchain/langgraph';
+import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
 
 import { ALL_TOOLS_LIST } from './tools/tools';
+
+// Long-term memory: MongoDB Atlas. LangGraph injects this store into tools
+// via `runtime.store` (see src/tools/memoryTools.ts). Set MONGODB_ATLAS_URI
+// in .env to enable; without it the memory tools are not exposed and the
+// graph simply runs without long-term memory.
+const MONGODB_ATLAS_URI = process.env.MONGODB_ATLAS_URI;
+const store = MONGODB_ATLAS_URI
+  ? await MongoDBStore.fromConnString(MONGODB_ATLAS_URI, {
+      dbName: 'langgraph',
+      collectionName: 'store',
+    })
+  : undefined;
+
+if (store) {
+  console.log('[memory] Long-term memory connected (MongoDB Atlas)');
+} else {
+  console.warn('[memory] MONGODB_ATLAS_URI non définie — mémoire long terme désactivée');
+}
 
 // LangGraph CLI / langgraphjs dev charge .env automatiquement via langgraph.json
 const SYSTEM_PROMPT = `You are a helpful assistant with access to tools. Respond to the user  in French with a respectful tone.
@@ -36,12 +55,11 @@ geckoTool DEFAULT BEHAVIOR :
 when the user asks about a crytocurrency or  a financial enquiry  , check the geckto Tool first and foremost - only when the data is not available  in the Gecko tool  that you should call the Tavily  tool &
 specify the user that the data might not be that accurate .
 
-
-
-
-`
-
-
+MEMORY TOOLS BEHAVIOR :
+Use the saveMemory tool when the user shares durable personal information, preferences, goals, or facts about themselves that would be useful in future conversations.
+Use the recallMemories tool when the user asks if you remember something, references a previous conversation, or when personal context would improve your answer.
+Never invent memories that were not returned by recallMemories.
+`;
 
 const toolNode = new ToolNode(ALL_TOOLS_LIST);
 
@@ -67,7 +85,7 @@ async function callModel(state: typeof MessagesAnnotation.State) {
   try {
     // Ensure system prompt is always present at the start of the conversation
     const messages =
-      state.messages[0]?.constructor?.name === "SystemMessage"
+      state.messages[0]?.constructor?.name === 'SystemMessage'
         ? state.messages
         : [new SystemMessage(SYSTEM_PROMPT), ...state.messages];
 
@@ -101,4 +119,7 @@ const app = graph.compile({
   // The langgraph Studio/Cloudapi will automatically add a checkpointer to save the state of the agent
   // only un-comment below if runing locally
   checkpointer: new MemorySaver(), // This will save the state of the agent in memory
+  // Long-term memory store (MongoDB Atlas). Undefined when MONGODB_ATLAS_URI
+  // is not set, in which case the graph runs without long-term memory.
+  ...(store ? { store } : {}),
 });

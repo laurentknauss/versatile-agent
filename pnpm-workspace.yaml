@@ -5,5 +5,9 @@ allowBuilds:
   protobufjs: true
   sharp: true
   unrs-resolver: true
+# pnpm 11 bloque par défaut les packages publiés depuis moins de 24 h
+# (minimumReleaseAge: 1440, sécurité supply-chain). Désactivé ici pour un
+# usage dev/formation qui installe les dernières versions immédiatement.
+minimumReleaseAge: 0
 patchedDependencies:
   '@typescript/vfs': patches/@typescript__vfs.patch
