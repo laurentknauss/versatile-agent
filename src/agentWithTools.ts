@@ -1,9 +1,8 @@
 import { SystemMessage, createAgent } from 'langchain';
-//import { AIMessage, SystemMessage } from '@langchain/core/messages';
-// import { ToolNode } from '@langchain/langgraph/prebuilt';
+
 import { ChatDeepSeek } from '@langchain/deepseek';
 
-import { END, MessagesAnnotation, START, StateGraph, MemorySaver } from '@langchain/langgraph';
+
 import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
 
 import { ALL_TOOLS_LIST } from './tools/tools';
@@ -16,26 +15,17 @@ const model = new ChatDeepSeek({
 });
 
 // Long-term memory: MongoDB Atlas. LangGraph injects this store into tools
-// via `runtime.store` (see src/tools/memoryTools.ts). Set MONGODB_ATLAS_URI
-// in .env to enable; without it the memory tools are not exposed and the
-// graph simply runs without long-term memory.
+
 const MONGODB_ATLAS_URI = process.env.MONGODB_ATLAS_URI;
-const store = MONGODB_ATLAS_URI
-  ? await MongoDBStore.fromConnString(MONGODB_ATLAS_URI, {
-      dbName: 'langgraph',
-      collectionName: 'store',
-    })
-  : undefined;
-
-if (store) {
-  console.log('[memory] Long-term memory connected (MongoDB Atlas)');
-} else {
-  console.warn('[memory] MONGODB_ATLAS_URI non définie — mémoire long terme désactivée');
+if(!MONGODB_ATLAS_URI) {
+  throw new Error("MONGO_ATLAS_URI is requitred  ")
 }
+const store =  await MongoDBStore.fromConnString(MONGODB_ATLAS_URI)
 
-const agent = createAgent({
+export const agent = createAgent({
   model: model,
   tools: ALL_TOOLS_LIST,
+  store: store,
   systemPrompt:
     "You are a helpful assistant with access to tools and you also conduct deep research on the  user's input topic . Respond to the user  in French with a respectful tone ",
 });
@@ -87,26 +77,5 @@ MEMORY TOOLS BEHAVIOR :
 Use the saveMemory tool when the user shares durable personal information, preferences, goals, or facts about themselves that would be useful in future conversations.
 Use the recallMemories tool when the user asks if you remember something, references a previous conversation, or when personal context would improve your answer.
 Never invent memories that were not returned by recallMemories.
-*/
-
-/**
-// Define a new graph
-export const graph = new StateGraph(MessagesAnnotation);
-
-graph
-  .addNode('agent', callModel)
-  .addEdge(START, 'agent') // __start__  is a special name for the entrypoint
-  .addNode('tools', toolNode)
-  .addEdge('tools', 'agent')
-  .addConditionalEdges('agent', shouldContinue, ['tools', END]); // If the model returns a tool call, we go to the tools node, otherwise we end the graph
-
-// Finally, we compile it into a LangChain Runnable
-const app = graph.compile({
-  // The langgraph Studio/Cloudapi will automatically add a checkpointer to save the state of the agent
-  // only un-comment below if runing locally
-  checkpointer: new MemorySaver(), // This will save the state of the agent in memory
-  // Long-term memory store (MongoDB Atlas). Undefined when MONGODB_ATLAS_URI
-  // is not set, in which case the graph runs without long-term memory.
-  ...(store ? { store } : {}),
-});
+;
 */
