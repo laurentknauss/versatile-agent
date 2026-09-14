@@ -8,9 +8,14 @@
 [![pnpm](https://img.shields.io/badge/pnpm-12.3-F69220?logo=pnpm)](https://pnpm.io/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-> **Agent LangGraph conversationnel avec 13 outils branchés, interface chat streaming, mémoire long terme, thread management, tests unitaires (Vitest), et monorepo pnpm.**
+> **Monorepo frontend + backend : backend agent LangGraph v1 (`createAgent`, 13 outils, mémoire long terme) et frontend landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 115 tests Vitest, pnpm.**
 
-![Landing page — historique des conversations à gauche, composer au centre](documentation/landing-page.png)
+| Côté            | Contenu                                                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, 13 outils, mémoire long terme, checkpointer, tests Vitest |
+| **🖥️ Frontend** | Landing page **ChatGPT-like** dans `assistant-ui/` — Next.js 16, sidebar d'historique (lister/renommer/supprimer), streaming SSE, proxy API  |
+
+![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
 
 ---
 
@@ -39,7 +44,7 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 | **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                                  |
 | **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore` ; sous `langgraph dev`, store fichier local du serveur) |
 
-![Conversation — les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](documentation/conversation.png)
+![Conversation — les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
 
 ---
 
