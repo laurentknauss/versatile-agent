@@ -3,7 +3,6 @@ import { z } from 'zod';
 import fetch from 'node-fetch';
 import { ForecastItem, ForecastResponse } from './types/weather';
 
-
 /**
  * Format wind speed from m/s to km/h
  */
@@ -23,7 +22,9 @@ const windDir = (deg: number): string => {
 const dominantDescription = (descriptions: string[]): string => {
   if (!descriptions.length) return 'aucune donnée';
   const freq: Record<string, number> = {};
-  descriptions.forEach(d => { freq[d] = (freq[d] || 0) + 1; });
+  descriptions.forEach((d) => {
+    freq[d] = (freq[d] || 0) + 1;
+  });
   return Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
 };
 
@@ -31,7 +32,7 @@ export const openWeatherMapTool = tool(
   async ({ city, country, days }: { city: string; country?: string; days?: number }) => {
     let apiKey = process.env.OPENWEATHERMAP_API_KEY;
     if (!apiKey) {
-      throw new Error("OPENWEATHERMAP_API_KEY is not set");
+      throw new Error('OPENWEATHERMAP_API_KEY is not set');
     }
     apiKey = apiKey.replace(/["';]/g, '').trim();
 
@@ -54,7 +55,7 @@ export const openWeatherMapTool = tool(
       throw new Error(`OpenWeatherMap API error! status: ${response.status}`);
     }
 
-    const data = await response.json() as ForecastResponse;
+    const data = (await response.json()) as ForecastResponse;
 
     if (!data.list || data.list.length === 0) {
       return `❌ No weather data available for ${city}.`;
@@ -68,16 +69,19 @@ export const openWeatherMapTool = tool(
     const todayStr = new Date(Date.now() + tzOffset * 1000).toISOString().split('T')[0];
 
     // Group forecast by local date (J+1 onward)
-    const forecastByDay: Record<string, {
-      temps: number[];
-      feelsLikes: number[];
-      descriptions: string[];
-      humidities: number[];
-      windSpeeds: number[];
-      windDegs: number[];
-      rain: number;
-      pop: number;
-    }> = {};
+    const forecastByDay: Record<
+      string,
+      {
+        temps: number[];
+        feelsLikes: number[];
+        descriptions: string[];
+        humidities: number[];
+        windSpeeds: number[];
+        windDegs: number[];
+        rain: number;
+        pop: number;
+      }
+    > = {};
 
     for (const item of data.list) {
       // Compute local date using destination timezone
@@ -135,116 +139,79 @@ export const openWeatherMapTool = tool(
       return `${d}/${m}`;
     };
 
+    const forecast = dates.map((date) => {
+      const day = forecastByDay[date];
 
-const forecast = dates.map(date => {
-  const day = forecastByDay[date];
+      // Average temperature
+      const avgTemp = Math.round(day.temps.reduce((a, b) => a + b, 0) / day.temps.length);
 
-  // Average temperature
-  const avgTemp = Math.round(
-    day.temps.reduce((a, b) => a + b, 0) / day.temps.length
-  );
+      const minTemp = Math.round(Math.min(...day.temps));
+      const maxTemp = Math.round(Math.max(...day.temps));
 
-  const minTemp = Math.round(Math.min(...day.temps));
-  const maxTemp = Math.round(Math.max(...day.temps));
+      const feelsLike = Math.round(
+        day.feelsLikes.reduce((a, b) => a + b, 0) / day.feelsLikes.length
+      );
 
-  const feelsLike = Math.round(
-    day.feelsLikes.reduce((a, b) => a + b, 0) / day.feelsLikes.length
-  );
+      // Dominant weather description
+      const desc = dominantDescription(day.descriptions);
 
-  // Dominant weather description
-  const desc = dominantDescription(day.descriptions);
+      // Average wind speed + direction
+      const avgWind = windToKmh(day.windSpeeds.reduce((a, b) => a + b, 0) / day.windSpeeds.length);
 
-  // Average wind speed + direction
-  const avgWind = windToKmh(
-    day.windSpeeds.reduce((a, b) => a + b, 0) / day.windSpeeds.length
-  );
+      const avgWindDeg = Math.round(day.windDegs.reduce((a, b) => a + b, 0) / day.windDegs.length);
 
-  const avgWindDeg = Math.round(
-    day.windDegs.reduce((a, b) => a + b, 0) / day.windDegs.length
-  );
+      // Average humidity
+      const avgHum = Math.round(day.humidities.reduce((a, b) => a + b, 0) / day.humidities.length);
 
-  // Average humidity
-  const avgHum = Math.round(
-    day.humidities.reduce((a, b) => a + b, 0) / day.humidities.length
-  );
+      // Precipitation probability
+      const popPercent = Math.round(day.pop * 100);
 
-  // Precipitation probability
-  const popPercent = Math.round(day.pop * 100);
+      return {
+        date,
+        temperature: {
+          averageCelsius: avgTemp,
+          minCelsius: minTemp,
+          maxCelsius: maxTemp,
+          feelsLikeCelsius: feelsLike,
+        },
+        weather: desc,
+        wind: {
+          speedKmh: avgWind,
+          directionDegrees: avgWindDeg,
+          direction: windDir(avgWindDeg),
+        },
+        humidityPercent: avgHum,
+        rainMm: Number(day.rain.toFixed(1)),
+        precipitationProbabilityPercent: popPercent,
+      };
+    });
 
-  return {
-    date,
-    temperature: {
-      averageCelsius: avgTemp,
-      minCelsius: minTemp,
-      maxCelsius: maxTemp,
-      feelsLikeCelsius: feelsLike,
-    },
-    weather: desc,
-    wind: {
-      speedKmh: avgWind,
-      directionDegrees: avgWindDeg,
-      direction: windDir(avgWindDeg),
-    },
-    humidityPercent: avgHum,
-    rainMm: Number(day.rain.toFixed(1)),
-    precipitationProbabilityPercent: popPercent,
-  };
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
     const shownDays = dates.length;
-    const label = shownDays < forecastDays
-      ? `(prévisions disponibles pour les ${shownDays} prochains jours)`
-      : `(prévisions pour les ${forecastDays} prochains jours, à partir de demain)`;
 
-    return `🌤️ **Météo pour ${locationName}** ${label} :\n${forecastList.join('\n')}`;
-    */
-const shownDays = dates.length;
-
-return {
-  location: {
-    city: data.city.name,
-    country: data.city.country,
-  },
-  forecastDaysRequested: forecastDays,
-  forecastDaysReturned: shownDays,
-  forecastStarting: "tomorrow",
-  forecast,
-};
-
-
+    return {
+      location: {
+        city: data.city.name,
+        country: data.city.country,
+      },
+      forecastDaysRequested: forecastDays,
+      forecastDaysReturned: shownDays,
+      forecastStarting: 'tomorrow',
+      forecast,
+    };
   },
   {
-    name: "openWeatherMap",
-    description: "Retrieves weather forecasts for a given city with temperature, wind, humidity, rain, and precipitation probability. Skips today's data — shows J+1 onward.",
+    name: 'openWeatherMap',
+    description:
+      "Retrieves weather forecasts for a given city with temperature, wind, humidity, rain, and precipitation probability. Skips today's data — shows J+1 onward.",
     schema: z.object({
-      city: z.string().describe("The name of the city to get the weather for."),
-      country: z.string().optional().describe("The country code of the city (optional)."),
-      days: z.number().min(1).max(5).optional().describe("Number of forecast days starting from tomorrow (1-5, default: 3)."),
+      city: z.string().describe('The name of the city to get the weather for.'),
+      country: z.string().optional().describe('The country code of the city (optional).'),
+      days: z
+        .number()
+        .min(1)
+        .max(5)
+        .optional()
+        .describe('Number of forecast days starting from tomorrow (1-5, default: 3).'),
     }),
   }
 );
