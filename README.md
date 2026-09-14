@@ -4,26 +4,42 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.4-blue)](https://langchain-ai.github.io/langgraphjs/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![assistant-ui](https://img.shields.io/badge/assistant--ui-latest-purple)](https://assistant-ui.com/)
-[![pnpm](https://img.shields.io/badge/pnpm-11-F69220?logo=pnpm)](https://pnpm.io/)
+[![LangGraph v0](<https://img.shields.io/badge/StateGraph-v0%20(legacy)-orange>)](https://github.com/laurentknauss/versatile-agent/tree/dev)
+[![pnpm](https://img.shields.io/badge/pnpm-12.3-F69220?logo=pnpm)](https://pnpm.io/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > **Agent LangGraph conversationnel avec 8 outils, interface chat streaming, structured outputs, thread management, tests unitaires (Vitest), et monorepo pnpm.**
 
 ---
 
+## 🌿 Branches — quelle version lire ?
+
+> ⚠️ **Cette branche `dev` est une archive.** Elle contient la **v0** du graphe : un `StateGraph` **monté à la main** (nœuds `agent` / `tools`, edge conditionnel `shouldContinue`, `MemorySaver`, export `graph`) et `ChatOpenAI` (`gpt-4.1-mini-2025-04-14`).
+
+| Branche                   | Version LangGraph                                                                                                         | Statut                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `main`                    | **v1 — `createAgent()`** : boucle ReAct intégrée, middleware, mémoire long terme (`store` MongoDB), modèle DeepSeek Flash | **Production — c'est la version à lire et à exécuter**           |
+| **`dev`** (cette branche) | **v0 — `StateGraph` manuel** : construction explicite du graphe, `ChatOpenAI`                                             | Archive obsolète, conservée pour documenter la migration v0 → v1 |
+
+**Pour lire le projet à jour : `git checkout main`.**
+
+⚠️ **Cette branche ne compile pas telle quelle** : la v0 importe `ChatOpenAI` depuis `@langchain/openai`, dépendance retirée de la lignée v1. Avant de l'exécuter : `pnpm add @langchain/openai`.
+
+---
+
 ## ✨ Fonctionnalités
 
-| Capacité | Détail |
-|---|---|
-| **🧠 Agent IA** | GPT-5.1 avec streaming, cycle ReAct outillé, structured outputs |
-| **🌤️ Météo** | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
-| **🪙 Crypto** | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe) |
-| **🔍 Web Search** | Recherche web via Tavily |
-| **💳 Stripe** | Paiements, clients, produits (API Stripe) |
-| **🧮 Utilitaires** | Addition, nombre aléatoire, heure courante |
-| **💬 Chat UI** | Interface assistant-ui (Next.js 16) |
-| **📜 Threads** | Historique persistant des conversations |
-| **📄 PDF Reader** | Extraction de texte depuis des PDFs |
+| Capacité           | Détail                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**    | GPT-4.1 mini (`ChatOpenAI`) avec streaming, cycle ReAct outillé par un `StateGraph` explicite         |
+| **🌤️ Météo**       | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
+| **🪙 Crypto**      | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                           |
+| **🔍 Web Search**  | Recherche web via Tavily                                                                              |
+| **💳 Stripe**      | Paiements, clients, produits (API Stripe)                                                             |
+| **🧮 Utilitaires** | Addition, nombre aléatoire, heure courante                                                            |
+| **💬 Chat UI**     | Interface assistant-ui (Next.js 16)                                                                   |
+| **📜 Threads**     | Historique persistant des conversations                                                               |
+| **📄 PDF Reader**  | Extraction de texte depuis des PDFs                                                                   |
 
 ---
 
@@ -32,7 +48,7 @@
 ```
 versatile-agent/
 ├── src/
-│   ├── agentWithTools.ts    ← Graph LangGraph (StateGraph, nœuds, edges)
+│   ├── agentWithTools.ts    ← Graph LangGraph v0 (StateGraph manuel : agent → tools → agent)
 │   └── tools/               ← Boîte à outils modulaire
 │       ├── tools.ts         ← Agrégateur de tous les outils
 │       ├── weatherTool.ts   ← OpenWeatherMap (structured output)
@@ -64,7 +80,7 @@ versatile-agent/
 ### Flux de messages
 
 ```
-Utilisateur → assistant-ui → Proxy API → LangGraph Agent (GPT-5.1)
+Utilisateur → assistant-ui → Proxy API → LangGraph Agent (GPT-4.1 mini · v0 StateGraph)
                                               │
                                          ┌────┴────┐
                                          │  Agent  │
@@ -84,6 +100,7 @@ Cela permet au LLM d'interpréter les données sans avoir à parser du texte —
 plus fiable, plus facile à maintenir, et moins d'hallucinations.
 
 **Exemple — weatherTool.ts :**
+
 ```typescript
 {
   location: { city: "Paris", country: "FR" },
@@ -105,6 +122,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
 ```
 
 **Exemple — coinGeckoPrice :**
+
 ```typescript
 {
   type: "crypto_prices",
@@ -116,6 +134,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
 ```
 
 **Exemple — coinGeckoMarket :**
+
 ```typescript
 {
   type: "crypto_market_data",
@@ -175,80 +194,88 @@ pnpm dev:frontend
 ### Variables d'environnement
 
 ```bash
-OPENAI_API_KEY=sk-...                          # Obligatoire (GPT-5.1)
-TAVILY_API_KEY=tvly-...                        # Obligatoire (web search)
-OPENWEATHERMAP_API_KEY=...                      # Optionnel (météo)
-COINGECKO_API_KEY=CG-...                        # Optionnel (crypto)
-STRIPE_SECRET_KEY=sk_live_...                   # Optionnel (Stripe)
-BRAVE_SEARCH_API_KEY=BSA...                     # Optionnel (Brave search, commenté)
+# Modèle (v0 : OpenAI — la v1 sur main utilise DEEPSEEK_API_KEY / deepseek-flash)
+OPENAI_API_KEY=sk-...                          # Obligatoire (ChatOpenAI, gpt-4.1-mini)
+
+# Outils
+TAVILY_API_KEY=tvly-...                        # Web search
+OPENWEATHERMAP_API_KEY=...                      # Météo
+COINGECKO_API_KEY=CG-...                        # Crypto
+STRIPE_SECRET_KEY=sk_live_...                   # Stripe
+BRAVE_SEARCH_API_KEY=BSA...                     # Brave search (commenté)
+
+# Mémoire long terme (v0 : store câblé uniquement si ce cluster est défini)
+# MONGODB_ATLAS_URI="mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/..."
 ```
 
 ---
 
 ## 🛠️ Outils disponibles
 
-| Outil | Description | Source |
-|---|---|---|
-| `tavilySearch` | Recherche web | Tavily API |
-| `openWeatherMap` | Prévisions météo enrichies (vent, humidité, pluie, ressenti) | OpenWeatherMap |
-| `coinGeckoPrice` | Prix crypto structurés (multi-devises, market cap, volume, change 24h) | CoinGecko |
-| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination) | CoinGecko |
-| `additionTool` | Addition de deux nombres | Interne |
-| `randomNumber` | Nombre aléatoire dans un intervalle | Interne |
-| `currentTime` | Heure locale HH:MM:SS | Interne |
-| `stripe_*` | Customers, produits, paiements | Stripe API |
-| `read_pdf` | Extraction texte depuis PDF (URL ou fichier local) | pdf-parse |
+| Outil             | Description                                                                               | Source         |
+| ----------------- | ----------------------------------------------------------------------------------------- | -------------- |
+| `tavilySearch`    | Recherche web                                                                             | Tavily API     |
+| `openWeatherMap`  | Prévisions météo enrichies (vent, humidité, pluie, ressenti)                              | OpenWeatherMap |
+| `coinGeckoPrice`  | Prix crypto structurés (multi-devises, market cap, volume, change 24h)                    | CoinGecko      |
+| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination)                         | CoinGecko      |
+| `additionTool`    | Addition de deux nombres                                                                  | Interne        |
+| `randomNumber`    | Nombre aléatoire dans un intervalle                                                       | Interne        |
+| `currentTime`     | Heure locale HH:MM:SS                                                                     | Interne        |
+| `stripe_*`        | Customers, produits, paiements                                                            | Stripe API     |
+| `read_pdf`        | Extraction texte depuis PDF (URL ou fichier local)                                        | pdf-parse      |
+| `saveMemory`      | Enregistre un fait durable pour les conversations futures (nécessite `MONGODB_ATLAS_URI`) | MongoDB store  |
+| `recallMemories`  | Recherche dans les souvenirs enregistrés                                                  | MongoDB store  |
 
 ---
 
 ### 💬 Example queries — CoinGecko
 
-| Category | Query | Tool used |
-|---|---|---|
-| **Single price** | *"What's the price of bitcoin in USD?"* | `coinGeckoPrice` |
-| **Multi-coin** | *"Give me prices for bitcoin, ethereum, solana, chainlink and cardano in EUR"* | `coinGeckoPrice` |
-| **Multi-currency** | *"Compare bitcoin price in USD, EUR and GBP"* | `coinGeckoPrice` |
-| **Price + change** | *"What's the price of avalanche-2 and its 24h change?"* | `coinGeckoPrice` |
-| **Top market cap** | *"What are the top 10 cryptocurrencies by market cap?"* | `coinGeckoMarket` |
-| **Top 50** | *"Show me the top 50 cryptos in EUR"* | `coinGeckoMarket` |
-| **By category** | *"What are the top 20 DeFi tokens?"* | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
-| **Gaming tokens** | *"List the top gaming tokens by market cap"* | `coinGeckoMarket` (category: `gaming`) |
-| **NFT tokens** | *"Top 5 NFT tokens ranked by market cap"* | `coinGeckoMarket` (category: `non-fungible-tokens-nft`) |
-| **Pagination** | *"Page 2 of the top cryptos"* | `coinGeckoMarket` (page param) |
-| **Combined** | *"Show me the top 10 cryptos and the price of bitcoin in EUR and USD"* | Both tools |
+| Category           | Query                                                                          | Tool used                                                  |
+| ------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Single price**   | _"What's the price of bitcoin in USD?"_                                        | `coinGeckoPrice`                                           |
+| **Multi-coin**     | _"Give me prices for bitcoin, ethereum, solana, chainlink and cardano in EUR"_ | `coinGeckoPrice`                                           |
+| **Multi-currency** | _"Compare bitcoin price in USD, EUR and GBP"_                                  | `coinGeckoPrice`                                           |
+| **Price + change** | _"What's the price of avalanche-2 and its 24h change?"_                        | `coinGeckoPrice`                                           |
+| **Top market cap** | _"What are the top 10 cryptocurrencies by market cap?"_                        | `coinGeckoMarket`                                          |
+| **Top 50**         | _"Show me the top 50 cryptos in EUR"_                                          | `coinGeckoMarket`                                          |
+| **By category**    | _"What are the top 20 DeFi tokens?"_                                           | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
+| **Gaming tokens**  | _"List the top gaming tokens by market cap"_                                   | `coinGeckoMarket` (category: `gaming`)                     |
+| **NFT tokens**     | _"Top 5 NFT tokens ranked by market cap"_                                      | `coinGeckoMarket` (category: `non-fungible-tokens-nft`)    |
+| **Pagination**     | _"Page 2 of the top cryptos"_                                                  | `coinGeckoMarket` (page param)                             |
+| **Combined**       | _"Show me the top 10 cryptos and the price of bitcoin in EUR and USD"_         | Both tools                                                 |
 
 ### 💬 Example queries — Weather
 
-| Query | Tool used | Features used |
-|---|---|---|
-| *"What's the weather in Paris?"* | `openWeatherMap` | Température, vent, humidité, pluie, ressenti |
-| *"Forecast for Tokyo next 5 days"* | `openWeatherMap` | J+1 shift, prévisions complètes |
-| *"Y a-t-il des risques de précipitations à Marseille ?"* | `openWeatherMap` | Pluviométrie mm, probabilité % |
-| *"Météo détaillée à Montréal sur 4 jours"* | `openWeatherMap` | Vent, humidité, ressenti, pluie |
+| Query                                                    | Tool used        | Features used                                |
+| -------------------------------------------------------- | ---------------- | -------------------------------------------- |
+| _"What's the weather in Paris?"_                         | `openWeatherMap` | Température, vent, humidité, pluie, ressenti |
+| _"Forecast for Tokyo next 5 days"_                       | `openWeatherMap` | J+1 shift, prévisions complètes              |
+| _"Y a-t-il des risques de précipitations à Marseille ?"_ | `openWeatherMap` | Pluviométrie mm, probabilité %               |
+| _"Météo détaillée à Montréal sur 4 jours"_               | `openWeatherMap` | Vent, humidité, ressenti, pluie              |
 
 ### 💬 Example queries — Web search & utilities
 
-| Query | Tool used |
-|---|---|
-| *"Search for latest AI news"* | `tavilySearch` |
-| *"What's 42 + 58?"* | `additionTool` |
-| *"Give me a random number between 1 and 100"* | `randomNumber` |
-| *"What time is it?"* | `currentTime` |
+| Query                                         | Tool used      |
+| --------------------------------------------- | -------------- |
+| _"Search for latest AI news"_                 | `tavilySearch` |
+| _"What's 42 + 58?"_                           | `additionTool` |
+| _"Give me a random number between 1 and 100"_ | `randomNumber` |
+| _"What time is it?"_                          | `currentTime`  |
 
 ---
 
 ## 🧪 Scripts
 
-| Commande | Description |
-|---|---|
-| `pnpm dev` | Backend + frontend en parallèle |
-| `pnpm start` | Backend seul (`langgraphjs dev`) |
-| `pnpm typecheck` | Vérification TypeScript |
-| `pnpm lint` | ESLint |
-| `pnpm format` | Prettier |
-| `pnpm lint:fix` | ESLint avec auto-fix |
-| `pnpm test` | Tests unitaires Vitest (108 tests) |
-| `pnpm test:watch` | Tests en mode watch |
+| Commande          | Description                        |
+| ----------------- | ---------------------------------- |
+| `pnpm dev`        | Backend + frontend en parallèle    |
+| `pnpm start`      | Backend seul (`langgraphjs dev`)   |
+| `pnpm typecheck`  | Vérification TypeScript            |
+| `pnpm lint`       | ESLint                             |
+| `pnpm format`     | Prettier                           |
+| `pnpm lint:fix`   | ESLint avec auto-fix               |
+| `pnpm test`       | Tests unitaires Vitest (108 tests) |
+| `pnpm test:watch` | Tests en mode watch                |
 
 ---
 
@@ -278,17 +305,17 @@ Le dossier `okf/` contient la documentation auto-suffisante au format **Open Kno
 
 ## 📦 Stack technique
 
-| Technologie | Version |
-|---|---|
-| TypeScript | 7 |
-| LangGraph | 1.4 |
-| @langchain/openai | 1.5 |
-| Next.js | 16 |
-| assistant-ui | latest |
-| pnpm | 11 |
-| ESLint | 9 |
-| Prettier | 3 |
-| Husky | 9 |
+| Technologie       | Version                                           |
+| ----------------- | ------------------------------------------------- |
+| TypeScript        | 7                                                 |
+| LangGraph         | 1.4                                               |
+| @langchain/openai | 1.5 (à installer sur cette branche, voir bandeau) |
+| Next.js           | 16                                                |
+| assistant-ui      | latest                                            |
+| pnpm              | 12.3                                              |
+| ESLint            | 9                                                 |
+| Prettier          | 3                                                 |
+| Husky             | 9                                                 |
 
 ---
 
