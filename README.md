@@ -54,7 +54,7 @@ versatile-agent/
 │       ├── tavilyTool.ts    ← Tavily web search
 │       ├── randomNumberTool.ts
 │       ├── pfdReader.ts     ← PDF reader
-│       ├── __tests__/       ← Tests Vitest (108 tests)
+│       ├── __tests__/       ← Tests Vitest (115 tests)
 │       └── types/           ← Types par outil
 │           ├── gecko.ts     ← CoinGecko types
 │           ├── weather.ts   ← OpenWeatherMap types
@@ -282,16 +282,17 @@ Test manuel : « Retiens que je m'appelle Laurent », puis « Comment je m'appel
 
 ## 🧪 Scripts
 
-| Commande          | Description                        |
-| ----------------- | ---------------------------------- |
-| `pnpm dev`        | Backend + frontend en parallèle    |
-| `pnpm start`      | Backend seul (`langgraphjs dev`)   |
-| `pnpm typecheck`  | Vérification TypeScript            |
-| `pnpm lint`       | ESLint                             |
-| `pnpm format`     | Prettier                           |
-| `pnpm lint:fix`   | ESLint avec auto-fix               |
-| `pnpm test`       | Tests unitaires Vitest (108 tests) |
-| `pnpm test:watch` | Tests en mode watch                |
+| Commande          | Description                                        |
+| ----------------- | -------------------------------------------------- |
+| `pnpm dev`        | Backend + frontend en parallèle                    |
+| `pnpm start`      | Backend seul (`langgraphjs dev`)                   |
+| `pnpm build`      | Typecheck + build production du frontend (Next 16) |
+| `pnpm typecheck`  | Vérification TypeScript                            |
+| `pnpm lint`       | ESLint                                             |
+| `pnpm format`     | Prettier                                           |
+| `pnpm lint:fix`   | ESLint avec auto-fix                               |
+| `pnpm test`       | Tests unitaires Vitest (115 tests)                 |
+| `pnpm test:watch` | Tests en mode watch                                |
 
 ---
 
