@@ -44,7 +44,8 @@ export const ALL_TOOLS_LIST = [
   currentTimeTool,
   tavilySearchTool,
   ...ALL_STRIPE_TOOLS,
-  // Long-term memory tools (MongoDB Atlas). Only exposed when the store is
-  // configured so the model never calls them without a backing store.
-  ...(process.env.MONGODB_ATLAS_URI ? [saveMemoryTool, recallMemoriesTool] : []),
+  // Long-term memory tools: the agent always gets a store (local MongoDB in dev,
+  // remote MongoDB Atlas in production — see agentWithTools.ts).
+  saveMemoryTool,
+  recallMemoriesTool,
 ];
