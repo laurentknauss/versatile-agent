@@ -11,19 +11,31 @@
 
 ---
 
+## 🌿 Branches — quelle version lire ?
+
+| Branche                    | Version LangGraph                                                                                     | Statut                                                  |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **`main`** (cette branche) | **v1 — `createAgent()`** : boucle ReAct intégrée, middleware, mémoire long terme via `store`          | **Production** — le code à lire et à exécuter           |
+| **`dev`**                  | **v0 — `StateGraph` manuel** : nœuds `agent`/`tools`, `shouldContinue`, export `graph`, `MemorySaver` | Archive obsolète, conservée comme trace de la migration |
+
+La migration s'est faite dans ce sens : **la v1 est passée en production sur `main`**, la v0 reste sur `dev`.
+
+---
+
 ## ✨ Fonctionnalités
 
-| Capacité           | Détail                                                                                                |
-| ------------------ | ----------------------------------------------------------------------------------------------------- |
-| **🧠 Agent IA**    | GPT-5.1 avec streaming, cycle ReAct outillé, structured outputs                                       |
-| **🌤️ Météo**       | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
-| **🪙 Crypto**      | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                           |
-| **🔍 Web Search**  | Recherche web via Tavily                                                                              |
-| **💳 Stripe**      | Paiements, clients, produits (API Stripe)                                                             |
-| **🧮 Utilitaires** | Addition, nombre aléatoire, heure courante                                                            |
-| **💬 Chat UI**     | Interface assistant-ui (Next.js 16)                                                                   |
-| **📜 Threads**     | Historique persistant des conversations                                                               |
-| **📄 PDF Reader**  | Extraction de texte depuis des PDFs                                                                   |
+| Capacité                  | Détail                                                                                                |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`         |
+| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
+| **🪙 Crypto**             | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                           |
+| **🔍 Web Search**         | Recherche web via Tavily                                                                              |
+| **💳 Stripe**             | Paiements, clients, produits (API Stripe)                                                             |
+| **🧮 Utilitaires**        | Addition, nombre aléatoire, heure courante                                                            |
+| **💬 Chat UI**            | Interface assistant-ui (Next.js 16)                                                                   |
+| **📜 Threads**            | Historique persistant des conversations                                                               |
+| **📄 PDF Reader**         | Extraction de texte depuis des PDFs                                                                   |
+| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` persistés dans MongoDB (local en dev, Atlas en production)            |
 
 ---
 
@@ -64,7 +76,7 @@ versatile-agent/
 ### Flux de messages
 
 ```
-Utilisateur → assistant-ui → Proxy API → LangGraph Agent (GPT-5.1)
+Utilisateur → assistant-ui → Proxy API → LangGraph Agent (DeepSeek Flash · v1 createAgent)
                                               │
                                          ┌────┴────┐
                                          │  Agent  │
@@ -178,28 +190,38 @@ pnpm dev:frontend
 ### Variables d'environnement
 
 ```bash
-OPENAI_API_KEY=sk-...
-TAVILY_API_KEY=tvly-...
-OPENWEATHERMAP_API_KEY=...
-COINGECKO_API_KEY=CG-...
-STRIPE_SECRET_KEY=sk_live_...
+# Modèle (v1)
+DEEPSEEK_API_KEY=sk-...                          # Obligatoire (modèle deepseek-flash)
+
+# Outils
+TAVILY_API_KEY=tvly-...                          # Web search
+OPENWEATHERMAP_API_KEY=...                       # Météo
+COINGECKO_API_KEY=CG-...                         # Crypto
+STRIPE_SECRET_KEY=sk_live_...                    # Stripe
+OPENAI_API_KEY=sk-...                            # Legacy : utilisée uniquement par la v0 archivée sur dev
+
+# Mémoire long terme (store LangGraph)
+MONGODB_LOCAL_URI="mongodb://127.0.0.1:27017/?directConnection=true"       # Dev : container Docker mongo-local
+# MONGODB_ATLAS_URI="mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/..."  # Prod : cluster MongoDB Atlas remote
 ```
 
 ---
 
 ## 🛠️ Outils disponibles
 
-| Outil             | Description                                                            | Source         |
-| ----------------- | ---------------------------------------------------------------------- | -------------- |
-| `tavilySearch`    | Recherche web                                                          | Tavily API     |
-| `openWeatherMap`  | Prévisions météo enrichies (vent, humidité, pluie, ressenti)           | OpenWeatherMap |
-| `coinGeckoPrice`  | Prix crypto structurés (multi-devises, market cap, volume, change 24h) | CoinGecko      |
-| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination)      | CoinGecko      |
-| `additionTool`    | Addition de deux nombres                                               | Interne        |
-| `randomNumber`    | Nombre aléatoire dans un intervalle                                    | Interne        |
-| `currentTime`     | Heure locale HH:MM:SS                                                  | Interne        |
-| `stripe_*`        | Customers, produits, paiements                                         | Stripe API     |
-| `read_pdf`        | Extraction texte depuis PDF (URL ou fichier local)                     | pdf-parse      |
+| Outil             | Description                                                                                  | Source         |
+| ----------------- | -------------------------------------------------------------------------------------------- | -------------- |
+| `tavilySearch`    | Recherche web                                                                                | Tavily API     |
+| `openWeatherMap`  | Prévisions météo enrichies (vent, humidité, pluie, ressenti)                                 | OpenWeatherMap |
+| `coinGeckoPrice`  | Prix crypto structurés (multi-devises, market cap, volume, change 24h)                       | CoinGecko      |
+| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination)                            | CoinGecko      |
+| `additionTool`    | Addition de deux nombres                                                                     | Interne        |
+| `randomNumber`    | Nombre aléatoire dans un intervalle                                                          | Interne        |
+| `currentTime`     | Heure locale HH:MM:SS                                                                        | Interne        |
+| `stripe_*`        | Customers, produits, paiements                                                               | Stripe API     |
+| `read_pdf`        | Extraction texte depuis PDF (URL ou fichier local)                                           | pdf-parse      |
+| `saveMemory`      | Enregistre un fait durable (identité, préférences, objectifs) pour les conversations futures | MongoDB store  |
+| `recallMemories`  | Recherche dans les souvenirs enregistrés (par utilisateur)                                   | MongoDB store  |
 
 ---
 
@@ -235,6 +257,25 @@ STRIPE_SECRET_KEY=sk_live_...
 | _"What's 42 + 58?"_                           | `additionTool` |
 | _"Give me a random number between 1 and 100"_ | `randomNumber` |
 | _"What time is it?"_                          | `currentTime`  |
+
+---
+
+## 🧠 Mémoire long terme (MongoDB)
+
+Les tools `saveMemory` / `recallMemories` s'appuient sur le `store` LangGraph (namespace `memories/<userId>`), passé à `createAgent()` dans `src/agentWithTools.ts`.
+
+**Développement — MongoDB local (Docker, données persistantes) :**
+
+```bash
+docker run -d --name mongo-local -p 27017:27017 \
+  -v mongo-local-data:/data/db --restart unless-stopped mongo:7
+```
+
+La base `langgraph`, la collection `store` et les index sont créés automatiquement au premier accès.
+
+**Production — un cluster MongoDB Atlas _remote_ est obligatoire** : le graphe ne doit pas dépendre d'une base qui n'existe que sur la machine de dev. Renseigner `MONGODB_ATLAS_URI`, puis réactiver le bloc Atlas (commenté) dans `src/agentWithTools.ts`.
+
+Test manuel : « Retiens que je m'appelle Laurent », puis « Comment je m'appelle ? » → le second appel déclenche `recallMemories` et répond depuis la base.
 
 ---
 
@@ -279,17 +320,20 @@ Le dossier `okf/` contient la documentation auto-suffisante au format google **O
 
 ## 📦 Stack technique
 
-| Technologie       | Version |
-| ----------------- | ------- |
-| TypeScript        | 7       |
-| LangGraph         | 1.4     |
-| @langchain/openai | 1.5     |
-| Next.js           | 16      |
-| assistant-ui      | latest  |
-| pnpm              | 11      |
-| ESLint            | 9       |
-| Prettier          | 3       |
-| Husky             | 9       |
+| Technologie                  | Version |
+| ---------------------------- | ------- |
+| TypeScript                   | 7       |
+| LangGraph                    | 1.4     |
+| langchain (createAgent)      | 1.5     |
+| @langchain/deepseek          | 1.1     |
+| @langchain/core              | 1.2.11  |
+| MongoDB (mémoire long terme) | 7       |
+| Next.js                      | 16      |
+| assistant-ui                 | latest  |
+| pnpm                         | 12.3    |
+| ESLint                       | 9       |
+| Prettier                     | 3       |
+| Husky                        | 9       |
 
 ---
 
