@@ -36,7 +36,6 @@ import {
   XIcon,
 } from 'lucide-react';
 import { MarkdownText } from '@/components/assistant-ui/elements/markdown-text';
-import { ToolFallback } from '@/components/assistant-ui/elements/tool-fallback.aui';
 import { CloneThreadShell } from './clone-thread-shell';
 
 export const ChatGPT: FC = () => {
@@ -274,8 +273,9 @@ const AssistantMessage: FC = () => {
       <div className="text-white dark:text-[#ececec]">
         <MessagePrimitive.Parts>
           {({ part }) => {
+            // Tool calls are machinery, not conversation: only text reaches the
+            // user, every other part is dropped from the thread.
             if (part.type === 'text') return <MarkdownText />;
-            if (part.type === 'tool-call') return part.toolUI ?? <ToolFallback {...part} />;
             return null;
           }}
         </MessagePrimitive.Parts>
