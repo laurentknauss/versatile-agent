@@ -39,7 +39,7 @@ export const saveMemoryTool = tool(
     runtime: ToolRuntime<unknown, unknown>
   ) => {
     if (!runtime.store) {
-      return 'Long-term memory is not configured (MONGODB_ATLAS_URI missing). Do not retry.';
+      return 'Long-term memory is not configured (no store attached). Do not retry.';
     }
     // @langchain/core types ToolRuntime.store with its own KV BaseStore, but
     // the LangGraph ToolNode injects the graph's store (namespace + put/search).
@@ -73,7 +73,7 @@ export const recallMemoriesTool = tool(
     runtime: ToolRuntime<unknown, unknown>
   ) => {
     if (!runtime.store) {
-      return 'Long-term memory is not configured (MONGODB_ATLAS_URI missing). Do not retry.';
+      return 'Long-term memory is not configured (no store attached). Do not retry.';
     }
     const store = runtime.store as unknown as LangGraphBaseStore;
     const namespace = memoryNamespace(runtime);

@@ -32,7 +32,7 @@
 ```
 versatile-agent/
 ├── src/
-│   ├── agentWithTools.ts    ← Graph LangGraph (StateGraph, nœuds, edges)
+│   ├── agentWithTools.ts    ← Agent LangGraph v1 (createAgent + tools + mémoire)
 │   └── tools/               ← Boîte à outils modulaire
 │       ├── tools.ts         ← Agrégateur de tous les outils
 │       ├── weatherTool.ts   ← OpenWeatherMap (structured output)
