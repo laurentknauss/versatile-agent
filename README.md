@@ -13,17 +13,17 @@
 
 ## ✨ Fonctionnalités
 
-| Capacité | Détail |
-|---|---|
-| **🧠 Agent IA** | GPT-5.1 avec streaming, cycle ReAct outillé, structured outputs |
-| **🌤️ Météo** | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
-| **🪙 Crypto** | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe) |
-| **🔍 Web Search** | Recherche web via Tavily |
-| **💳 Stripe** | Paiements, clients, produits (API Stripe) |
-| **🧮 Utilitaires** | Addition, nombre aléatoire, heure courante |
-| **💬 Chat UI** | Interface assistant-ui (Next.js 16) |
-| **📜 Threads** | Historique persistant des conversations |
-| **📄 PDF Reader** | Extraction de texte depuis des PDFs |
+| Capacité           | Détail                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**    | GPT-5.1 avec streaming, cycle ReAct outillé, structured outputs                                       |
+| **🌤️ Météo**       | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
+| **🪙 Crypto**      | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                           |
+| **🔍 Web Search**  | Recherche web via Tavily                                                                              |
+| **💳 Stripe**      | Paiements, clients, produits (API Stripe)                                                             |
+| **🧮 Utilitaires** | Addition, nombre aléatoire, heure courante                                                            |
+| **💬 Chat UI**     | Interface assistant-ui (Next.js 16)                                                                   |
+| **📜 Threads**     | Historique persistant des conversations                                                               |
+| **📄 PDF Reader**  | Extraction de texte depuis des PDFs                                                                   |
 
 ---
 
@@ -84,6 +84,7 @@ Cela permet au LLM d'interpréter les données sans avoir à parser du texte —
 plus fiable, plus facile à maintenir, et moins d'hallucinations.
 
 **Exemple — weatherTool.ts :**
+
 ```typescript
 {
   location: { city: "Paris", country: "FR" },
@@ -92,7 +93,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
   forecastStarting: "tomorrow",  // J+1 shift (skip today)
   forecast: [
     {
-      date: "2024-06-02",
+      date: "2026-06-02",
       temperature: { averageCelsius: 22, minCelsius: 20, maxCelsius: 24, feelsLikeCelsius: 21 },
       weather: "pluie légère",
       wind: { speedKmh: 18, directionDegrees: 220, direction: "↗️ SW" },
@@ -105,6 +106,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
 ```
 
 **Exemple — coinGeckoPrice :**
+
 ```typescript
 {
   type: "crypto_prices",
@@ -116,6 +118,7 @@ plus fiable, plus facile à maintenir, et moins d'hallucinations.
 ```
 
 **Exemple — coinGeckoMarket :**
+
 ```typescript
 {
   type: "crypto_market_data",
@@ -175,80 +178,78 @@ pnpm dev:frontend
 ### Variables d'environnement
 
 ```bash
-OPENAI_API_KEY=sk-...                          # Obligatoire (GPT-5.1)
-TAVILY_API_KEY=tvly-...                        # Obligatoire (web search)
-OPENWEATHERMAP_API_KEY=...                      # Optionnel (météo)
-COINGECKO_API_KEY=CG-...                        # Optionnel (crypto)
-STRIPE_SECRET_KEY=sk_live_...                   # Optionnel (Stripe)
-BRAVE_SEARCH_API_KEY=BSA...                     # Optionnel (Brave search, commenté)
+OPENAI_API_KEY=sk-...
+TAVILY_API_KEY=tvly-...
+OPENWEATHERMAP_API_KEY=...
+COINGECKO_API_KEY=CG-...
+STRIPE_SECRET_KEY=sk_live_...
 ```
 
 ---
 
 ## 🛠️ Outils disponibles
 
-| Outil | Description | Source |
-|---|---|---|
-| `tavilySearch` | Recherche web | Tavily API |
-| `openWeatherMap` | Prévisions météo enrichies (vent, humidité, pluie, ressenti) | OpenWeatherMap |
-| `coinGeckoPrice` | Prix crypto structurés (multi-devises, market cap, volume, change 24h) | CoinGecko |
-| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination) | CoinGecko |
-| `additionTool` | Addition de deux nombres | Interne |
-| `randomNumber` | Nombre aléatoire dans un intervalle | Interne |
-| `currentTime` | Heure locale HH:MM:SS | Interne |
-| `stripe_*` | Customers, produits, paiements | Stripe API |
-| `read_pdf` | Extraction texte depuis PDF (URL ou fichier local) | pdf-parse |
+| Outil             | Description                                                            | Source         |
+| ----------------- | ---------------------------------------------------------------------- | -------------- |
+| `tavilySearch`    | Recherche web                                                          | Tavily API     |
+| `openWeatherMap`  | Prévisions météo enrichies (vent, humidité, pluie, ressenti)           | OpenWeatherMap |
+| `coinGeckoPrice`  | Prix crypto structurés (multi-devises, market cap, volume, change 24h) | CoinGecko      |
+| `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination)      | CoinGecko      |
+| `additionTool`    | Addition de deux nombres                                               | Interne        |
+| `randomNumber`    | Nombre aléatoire dans un intervalle                                    | Interne        |
+| `currentTime`     | Heure locale HH:MM:SS                                                  | Interne        |
+| `stripe_*`        | Customers, produits, paiements                                         | Stripe API     |
+| `read_pdf`        | Extraction texte depuis PDF (URL ou fichier local)                     | pdf-parse      |
 
 ---
 
 ### 💬 Example queries — CoinGecko
 
-| Category | Query | Tool used |
-|---|---|---|
-| **Single price** | *"What's the price of bitcoin in USD?"* | `coinGeckoPrice` |
-| **Multi-coin** | *"Give me prices for bitcoin, ethereum, solana, chainlink and cardano in EUR"* | `coinGeckoPrice` |
-| **Multi-currency** | *"Compare bitcoin price in USD, EUR and GBP"* | `coinGeckoPrice` |
-| **Price + change** | *"What's the price of avalanche-2 and its 24h change?"* | `coinGeckoPrice` |
-| **Top market cap** | *"What are the top 10 cryptocurrencies by market cap?"* | `coinGeckoMarket` |
-| **Top 50** | *"Show me the top 50 cryptos in EUR"* | `coinGeckoMarket` |
-| **By category** | *"What are the top 20 DeFi tokens?"* | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
-| **Gaming tokens** | *"List the top gaming tokens by market cap"* | `coinGeckoMarket` (category: `gaming`) |
-| **NFT tokens** | *"Top 5 NFT tokens ranked by market cap"* | `coinGeckoMarket` (category: `non-fungible-tokens-nft`) |
-| **Pagination** | *"Page 2 of the top cryptos"* | `coinGeckoMarket` (page param) |
-| **Combined** | *"Show me the top 10 cryptos and the price of bitcoin in EUR and USD"* | Both tools |
+| Category           | Query                                                                          | Tool used                                                  |
+| ------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Single price**   | _"What's the price of bitcoin in USD?"_                                        | `coinGeckoPrice`                                           |
+| **Multi-coin**     | _"Give me prices for bitcoin, ethereum, solana, chainlink and cardano in EUR"_ | `coinGeckoPrice`                                           |
+| **Multi-currency** | _"Compare bitcoin price in USD, EUR and GBP"_                                  | `coinGeckoPrice`                                           |
+| **Price + change** | _"What's the price of avalanche token and its 24h change?"_                    | `coinGeckoPrice`                                           |
+| **Top market cap** | _"What are the top 10 cryptocurrencies by market cap?"_                        | `coinGeckoMarket`                                          |
+| **Top 50**         | _"Show me the top 50 cryptos in EUR"_                                          | `coinGeckoMarket`                                          |
+| **By category**    | _"What are the top 20 DeFi tokens?"_                                           | `coinGeckoMarket` (category: `decentralized-finance-defi`) |
+| **Gaming tokens**  | _"List the top gaming tokens by market cap"_                                   | `coinGeckoMarket` (category: `gaming`)                     |
+| **NFT tokens**     | _"Top 5 NFT tokens ranked by market cap"_                                      | `coinGeckoMarket` (category: `non-fungible-tokens-nft`)    |
+| **Combined**       | _"Show me the top 10 cryptos and the price of bitcoin in EUR and USD"_         | Both tools                                                 |
 
 ### 💬 Example queries — Weather
 
-| Query | Tool used | Features used |
-|---|---|---|
-| *"What's the weather in Paris?"* | `openWeatherMap` | Température, vent, humidité, pluie, ressenti |
-| *"Forecast for Tokyo next 5 days"* | `openWeatherMap` | J+1 shift, prévisions complètes |
-| *"Y a-t-il des risques de précipitations à Marseille ?"* | `openWeatherMap` | Pluviométrie mm, probabilité % |
-| *"Météo détaillée à Montréal sur 4 jours"* | `openWeatherMap` | Vent, humidité, ressenti, pluie |
+| Query                                                                               | Tool used        | Features used                                |
+| ----------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- |
+| _"What's the weather in Paris?"_                                                    | `openWeatherMap` | Température, vent, humidité, pluie, ressenti |
+| _"Forecast for Tokyo next 5 days"_                                                  | `openWeatherMap` | J+1 shift, prévisions complètes              |
+| _"Y a-t-il des risques de précipitations à Marseille dans les 3 prochains jours ?"_ | `openWeatherMap` | Pluviométrie mm, probabilité %               |
+| _"Météo détaillée à Montréal sur 4 jours"_                                          | `openWeatherMap` | Vent, humidité, ressenti, pluie              |
 
 ### 💬 Example queries — Web search & utilities
 
-| Query | Tool used |
-|---|---|
-| *"Search for latest AI news"* | `tavilySearch` |
-| *"What's 42 + 58?"* | `additionTool` |
-| *"Give me a random number between 1 and 100"* | `randomNumber` |
-| *"What time is it?"* | `currentTime` |
+| Query                                         | Tool used      |
+| --------------------------------------------- | -------------- |
+| _"Search for latest AI news"_                 | `tavilySearch` |
+| _"What's 42 + 58?"_                           | `additionTool` |
+| _"Give me a random number between 1 and 100"_ | `randomNumber` |
+| _"What time is it?"_                          | `currentTime`  |
 
 ---
 
 ## 🧪 Scripts
 
-| Commande | Description |
-|---|---|
-| `pnpm dev` | Backend + frontend en parallèle |
-| `pnpm start` | Backend seul (`langgraphjs dev`) |
-| `pnpm typecheck` | Vérification TypeScript |
-| `pnpm lint` | ESLint |
-| `pnpm format` | Prettier |
-| `pnpm lint:fix` | ESLint avec auto-fix |
-| `pnpm test` | Tests unitaires Vitest (108 tests) |
-| `pnpm test:watch` | Tests en mode watch |
+| Commande          | Description                        |
+| ----------------- | ---------------------------------- |
+| `pnpm dev`        | Backend + frontend en parallèle    |
+| `pnpm start`      | Backend seul (`langgraphjs dev`)   |
+| `pnpm typecheck`  | Vérification TypeScript            |
+| `pnpm lint`       | ESLint                             |
+| `pnpm format`     | Prettier                           |
+| `pnpm lint:fix`   | ESLint avec auto-fix               |
+| `pnpm test`       | Tests unitaires Vitest (108 tests) |
+| `pnpm test:watch` | Tests en mode watch                |
 
 ---
 
@@ -265,7 +266,7 @@ Le backend expose un **Studio visuel** à `http://localhost:2024` :
 
 ## 📚 Documentation locale
 
-Le dossier `okf/` contient la documentation auto-suffisante au format **Open Knowledge** :
+Le dossier `okf/` contient la documentation auto-suffisante au format google **Open Knowledge** :
 
 - [Spécification](okf/SPEC.md)
 - [Architecture](okf/concepts/architecture.md)
@@ -278,17 +279,17 @@ Le dossier `okf/` contient la documentation auto-suffisante au format **Open Kno
 
 ## 📦 Stack technique
 
-| Technologie | Version |
-|---|---|
-| TypeScript | 7 |
-| LangGraph | 1.4 |
-| @langchain/openai | 1.5 |
-| Next.js | 16 |
-| assistant-ui | latest |
-| pnpm | 11 |
-| ESLint | 9 |
-| Prettier | 3 |
-| Husky | 9 |
+| Technologie       | Version |
+| ----------------- | ------- |
+| TypeScript        | 7       |
+| LangGraph         | 1.4     |
+| @langchain/openai | 1.5     |
+| Next.js           | 16      |
+| assistant-ui      | latest  |
+| pnpm              | 11      |
+| ESLint            | 9       |
+| Prettier          | 3       |
+| Husky             | 9       |
 
 ---
 
