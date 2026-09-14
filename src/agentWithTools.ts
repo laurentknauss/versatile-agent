@@ -1,11 +1,19 @@
-import { AIMessage, SystemMessage } from '@langchain/core/messages';
-import { ToolNode } from '@langchain/langgraph/prebuilt';
-import { ChatOpenAI } from '@langchain/openai';
+import { SystemMessage, createAgent } from 'langchain';
+//import { AIMessage, SystemMessage } from '@langchain/core/messages';
+// import { ToolNode } from '@langchain/langgraph/prebuilt';
+import { ChatDeepSeek } from '@langchain/deepseek';
 
 import { END, MessagesAnnotation, START, StateGraph, MemorySaver } from '@langchain/langgraph';
 import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
 
 import { ALL_TOOLS_LIST } from './tools/tools';
+
+// Create the LLM model & give it access to tools
+const model = new ChatDeepSeek({
+  model: 'deepseek-flash',
+
+  streaming: true,
+});
 
 // Long-term memory: MongoDB Atlas. LangGraph injects this store into tools
 // via `runtime.store` (see src/tools/memoryTools.ts). Set MONGODB_ATLAS_URI
@@ -25,10 +33,15 @@ if (store) {
   console.warn('[memory] MONGODB_ATLAS_URI non définie — mémoire long terme désactivée');
 }
 
-/** LangGraph CLI / langgraphjs dev charge .env automatiquement via langgraph.json */
-const SYSTEM_PROMPT = `You are a helpful assistant with access to tools and you also conduct deep research on the  user's input topic . Respond to the user  in French with a respectful tone.
+const agent = createAgent({
+  model: model,
+  tools: ALL_TOOLS_LIST,
+  systemPrompt:
+    "You are a helpful assistant with access to tools and you also conduct deep research on the  user's input topic . Respond to the user  in French with a respectful tone ",
+});
 
-Your  job is to use tools to gather  information about theuser' s  input topic.
+/**
+  Your  job is to use tools to gather  information about theuser' s  input topic.
 you canuse any  of the  tools provided to you to find  resources that canhelp answer the research question.
 you have access to the following tools :
   - gecko tool : for conductiong resarch about crypto
@@ -74,51 +87,9 @@ MEMORY TOOLS BEHAVIOR :
 Use the saveMemory tool when the user shares durable personal information, preferences, goals, or facts about themselves that would be useful in future conversations.
 Use the recallMemories tool when the user asks if you remember something, references a previous conversation, or when personal context would improve your answer.
 Never invent memories that were not returned by recallMemories.
-`;
+*/
 
-const toolNode = new ToolNode(ALL_TOOLS_LIST);
-
-// Create the LLM model & give it access to tools
-const model = new ChatOpenAI({
-  model: 'gpt-4.1-mini-2025-04-14',
-
-  streaming: true,
-}).bindTools(ALL_TOOLS_LIST);
-
-function shouldContinue({ messages }: typeof MessagesAnnotation.State) {
-  const lastMessage = messages[messages.length - 1] as AIMessage;
-  if (lastMessage.tool_calls?.length) {
-    return 'tools';
-  }
-
-  // Otherwise, we stop (reply to the user)  using the special "__end__" node
-  return END;
-}
-
-// Define the function that calls the model
-async function callModel(state: typeof MessagesAnnotation.State) {
-  try {
-    // Ensure system prompt is always present at the start of the conversation
-    const messages =
-      state.messages[0]?.constructor?.name === 'SystemMessage'
-        ? state.messages
-        : [new SystemMessage(SYSTEM_PROMPT), ...state.messages];
-
-    const response = await model.invoke(messages);
-    return { messages: [response] };
-  } catch (error) {
-    console.error('Error calling model:', error);
-
-    return {
-      messages: [
-        new AIMessage(
-          'Sorry, I encountered an error while processing your request. Please try again later.'
-        ),
-      ],
-    };
-  }
-}
-
+/**
 // Define a new graph
 export const graph = new StateGraph(MessagesAnnotation);
 
@@ -138,3 +109,4 @@ const app = graph.compile({
   // is not set, in which case the graph runs without long-term memory.
   ...(store ? { store } : {}),
 });
+*/
