@@ -4,7 +4,8 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.4-blue)](https://langchain-ai.github.io/langgraphjs/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![assistant-ui](https://img.shields.io/badge/assistant--ui-latest-purple)](https://assistant-ui.com/)
-[![pnpm](https://img.shields.io/badge/pnpm-11-F69220?logo=pnpm)](https://pnpm.io/)
+[![LangGraph v1](<https://img.shields.io/badge/createAgent-v1%20(production)-brightgreen>)](https://github.com/laurentknauss/versatile-agent/tree/main)
+[![pnpm](https://img.shields.io/badge/pnpm-12.3-F69220?logo=pnpm)](https://pnpm.io/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > **Agent LangGraph conversationnel avec 8 outils, interface chat streaming, structured outputs, thread management, tests unitaires (Vitest), et monorepo pnpm.**
