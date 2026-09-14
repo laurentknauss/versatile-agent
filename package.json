@@ -57,11 +57,6 @@
   "resolutions": {
     "zod": "3.25.67"
   },
-  "pnpm": {
-    "patchedDependencies": {
-      "@typescript/vfs@1.6.4": "patches/@typescript__vfs.patch"
-    }
-  },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix",
