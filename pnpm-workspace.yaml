@@ -11,3 +11,25 @@ allowBuilds:
 minimumReleaseAge: 0
 patchedDependencies:
   '@typescript/vfs': patches/@typescript__vfs.patch
+
+# Dépendances transitives forcées vers une version corrigée (`pnpm audit` clean).
+# Chaque surcharge reste dans la même majeure que ce que l'appelant demande.
+overrides:
+  '@humanfs/node': ^0.16.8
+  '@playwright/test': ^1.55.1
+  'brace-expansion@1': ^1.1.18
+  flatted: ^3.4.2
+  form-data: ^4.0.6
+  'picomatch@2': ^2.3.2
+  playwright: ^1.55.1
+  qs: ^6.16.0
+  ws: ^8.21.0
+  yaml: ^2.8.3
+
+# extract-zip 2.0.1 n'a toujours aucune version corrigée (dernière publication : 2020) et
+# n'arrive que par @langchain/langgraph-cli (devDependency, extraction des templates du CLI).
+# Risque accepté : les deux avis sont ignorés nommément pour garder `pnpm audit` lisible.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-jmr9-qjv8-65gv
+    - GHSA-7pqw-9j4j-h8q3
