@@ -8,7 +8,9 @@
 [![pnpm](https://img.shields.io/badge/pnpm-12.3-F69220?logo=pnpm)](https://pnpm.io/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-> **Agent LangGraph conversationnel avec 8 outils, interface chat streaming, structured outputs, thread management, tests unitaires (Vitest), et monorepo pnpm.**
+> **Agent LangGraph conversationnel avec 13 outils branchés, interface chat streaming, mémoire long terme, thread management, tests unitaires (Vitest), et monorepo pnpm.**
+
+![Landing page — historique des conversations à gauche, composer au centre](documentation/landing-page.png)
 
 ---
 
@@ -25,18 +27,19 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 
 ## ✨ Fonctionnalités
 
-| Capacité                  | Détail                                                                                                |
-| ------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`         |
-| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap |
-| **🪙 Crypto**             | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                           |
-| **🔍 Web Search**         | Recherche web via Tavily                                                                              |
-| **💳 Stripe**             | Paiements, clients, produits (API Stripe)                                                             |
-| **🧮 Utilitaires**        | Addition, nombre aléatoire, heure courante                                                            |
-| **💬 Chat UI**            | Interface assistant-ui (Next.js 16)                                                                   |
-| **📜 Threads**            | Historique persistant des conversations                                                               |
-| **📄 PDF Reader**         | Extraction de texte depuis des PDFs                                                                   |
-| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` persistés dans MongoDB (local en dev, Atlas en production)            |
+| Capacité                  | Détail                                                                                                                           |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`                                    |
+| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité précipitations) via OpenWeatherMap                            |
+| **🪙 Crypto**             | Prix et market data via CoinGecko (filtres catégorie, IDs, multi-timeframe)                                                      |
+| **🔍 Web Search**         | Recherche web via Tavily                                                                                                         |
+| **💳 Stripe**             | Paiements, clients, produits (API Stripe)                                                                                        |
+| **🧮 Utilitaires**        | Addition, nombre aléatoire, heure courante                                                                                       |
+| **💬 Chat UI**            | Interface assistant-ui (Next.js 16)                                                                                              |
+| **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                                  |
+| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore` ; sous `langgraph dev`, store fichier local du serveur) |
+
+![Conversation — les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](documentation/conversation.png)
 
 ---
 
