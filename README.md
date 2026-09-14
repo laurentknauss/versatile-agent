@@ -23,7 +23,7 @@
 
 **Pour lire le projet à jour : `git checkout main`.**
 
-⚠️ **Cette branche ne compile pas telle quelle** : la v0 importe `ChatOpenAI` depuis `@langchain/openai`, dépendance retirée de la lignée v1. Avant de l'exécuter : `pnpm add @langchain/openai`.
+⚠️ **Cette branche n'est pas exécutable telle quelle** : la v0 importe `ChatOpenAI` depuis `@langchain/openai`, dépendance retirée de la lignée v1. Elle est conservée **comme archive en lecture seule** — la version exécutable et à jour est `main`.
 
 ---
 
