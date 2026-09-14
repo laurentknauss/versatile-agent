@@ -63,12 +63,27 @@ const model = new ChatDeepSeek({
   streaming: true,
 });
 
-const MONGODB_ATLAS_URI = process.env.MONGODB_ATLAS_URI;
-if (!MONGODB_ATLAS_URI) {
-  throw new Error('MONGODB_ATLAS_URI is required');
-}
+// Long-term memory store (LangGraph BaseStore).
+//
+// LOCAL (développement) — MongoDB dans Docker avec volume persistant :
+//   docker run -d --name mongo-local -p 27017:27017 \
+//     -v mongo-local-data:/data/db --restart unless-stopped mongo:7
+// La base et les index sont créés automatiquement par fromConnString().
+//
+// PRODUCTION — un cluster MongoDB Atlas **remote** est obligatoire (le graphe ne
+// doit pas dépendre d'une base qui n'existe que sur la machine de dev).
+// Renseigner MONGODB_ATLAS_URI, puis réactiver le bloc ci-dessous :
+//
+// const MONGODB_ATLAS_URI = process.env.MONGODB_ATLAS_URI;
+// if (!MONGODB_ATLAS_URI) {
+//   throw new Error('MONGODB_ATLAS_URI is required');
+// }
+// const store = await MongoDBStore.fromConnString(MONGODB_ATLAS_URI, { dbName: 'langgraph' });
 
-const store = await MongoDBStore.fromConnString(MONGODB_ATLAS_URI);
+const MONGODB_LOCAL_URI =
+  process.env.MONGODB_LOCAL_URI ?? 'mongodb://127.0.0.1:27017/?directConnection=true';
+
+const store = await MongoDBStore.fromConnString(MONGODB_LOCAL_URI, { dbName: 'langgraph' });
 
 export const agent = createAgent({
   model,
