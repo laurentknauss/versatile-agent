@@ -47,8 +47,18 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 | **⏱️ Résilience réseau**  | Échéance sur **chaque** appel sortant : 15 s par requête HTTP, 10 s × 1 retry pour Stripe, 5 s / 20 s pour MongoDB |
 | **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués à l'utilisateur                                       |
 | **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                    |
+| **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français      |
 
 ![Conversation — les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
+
+### 🎙️ Dictée vocale — deux contraintes
+
+Le micro du composer s'appuie sur la **Web Speech API** du navigateur (`WebSpeechDictationAdapter`) :
+
+1. **Contexte sécurisé obligatoire** — l'API n'est exposée que sur `https://` ou `localhost`. Servie en HTTP
+   sur un domaine, l'application affiche toujours le micro mais la reconnaissance reste muette.
+2. **Chrome / Edge** — Firefox n'implémente pas `SpeechRecognition` : le micro y reste sans effet.
+   Sur Chrome, la transcription passe par le service de reconnaissance de Google, donc l'audio quitte la machine.
 
 ---
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { AssistantRuntimeProvider } from '@assistant-ui/react';
+import { AssistantRuntimeProvider, WebSpeechDictationAdapter } from '@assistant-ui/react';
 import {
   unstable_createLangGraphStream,
   useLangGraphRuntime,
@@ -13,6 +13,10 @@ import { createLangGraphThreadListAdapter } from '@/lib/langgraph-thread-list-ad
 import { pdfAttachmentAdapter } from '@/lib/pdf-attachment-adapter';
 
 const ASSISTANT_ID = process.env['NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID']!;
+
+// Dictée navigateur (Web Speech API) : le micro du composer transcrit la voix
+// directement dans le champ de saisie. Instance stable, créée une seule fois.
+const dictationAdapter = new WebSpeechDictationAdapter({ language: 'fr-FR' });
 
 export function Assistant() {
   const client = useMemo(() => createClient(), []);
@@ -32,7 +36,10 @@ export function Assistant() {
     // supported » (erreur silencieuse : aucun écouteur attachmentAddError).
     // Celui-ci accepte application/pdf et publie le chemin serveur du fichier,
     // que l'outil readPdf sait ouvrir.
-    adapters: { attachments: pdfAttachmentAdapter },
+    adapters: {
+      attachments: pdfAttachmentAdapter,
+      dictation: dictationAdapter,
+    },
     stream,
     create: async () => {
       const { thread_id } = await client.threads.create();
