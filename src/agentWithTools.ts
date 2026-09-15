@@ -48,6 +48,7 @@ LONG-TERM MEMORY:
 - Do not expose the internal memory mechanism unless the user asks about it.
 
 PDF DOCUMENTS:
+- A message may contain a line like "[document importé : data/uploads/xxx.pdf]": that is a PDF the user just uploaded from the chat interface. Call readPdf with that exact path as "source" immediately, without asking for a path or a URL.
 - Use readPdf to read a PDF from an http(s) URL or a local file path; local paths must sit in an allowed directory.
 - Pass "pages" when the user names pages, and "query" to locate a keyword instead of pulling the whole text.
 - Mention the page number when the answer depends on where something appears in the document.
@@ -84,10 +85,39 @@ const model = new ChatDeepSeek({
 // if (!MONGODB_ATLAS_URI) {
 //   throw new Error('MONGODB_ATLAS_URI is required');
 // }
-// const store = await MongoDBStore.fromConnString(MONGODB_ATLAS_URI, { dbName: 'langgraph' });
+// const store = await MongoDBStore.fromConnString(applyMongoTimeouts(MONGODB_ATLAS_URI), { dbName: 'langgraph' });
 
-const MONGODB_LOCAL_URI =
-  process.env.MONGODB_LOCAL_URI ?? 'mongodb://127.0.0.1:27017/?directConnection=true';
+// Délais du driver. `fromConnString()` fait un `new MongoClient(connString)` **sans
+// options** : la chaîne de connexion est le seul levier. Défauts du driver :
+// selection/connect 30 s, et `socketTimeoutMS: 0` — une socket figée ne lâche jamais.
+const MONGODB_TIMEOUT_MS = Number(process.env.MONGODB_TIMEOUT_MS ?? 5_000);
+const MONGODB_SOCKET_TIMEOUT_MS = Number(process.env.MONGODB_SOCKET_TIMEOUT_MS ?? 20_000);
+
+/**
+ * Ajoute les délais manquants à une chaîne de connexion.
+ * Le driver refuse un doublon (`URI option "x" cannot appear more than once`) :
+ * une valeur déjà présente dans l'URI gagne et n'est pas réécrite.
+ */
+function applyMongoTimeouts(uri: string): string {
+  const missing = (
+    [
+      ['serverSelectionTimeoutMS', MONGODB_TIMEOUT_MS],
+      ['connectTimeoutMS', MONGODB_TIMEOUT_MS],
+      ['socketTimeoutMS', MONGODB_SOCKET_TIMEOUT_MS],
+    ] as const
+  )
+    .filter(([option]) => !uri.includes(`${option}=`))
+    .map(([option, value]) => `${option}=${value}`)
+    .join('&');
+
+  if (!missing) return uri;
+
+  return `${uri}${uri.includes('?') ? '&' : '?'}${missing}`;
+}
+
+const MONGODB_LOCAL_URI = applyMongoTimeouts(
+  process.env.MONGODB_LOCAL_URI ?? 'mongodb://127.0.0.1:27017/?directConnection=true'
+);
 
 const store = await MongoDBStore.fromConnString(MONGODB_LOCAL_URI, { dbName: 'langgraph' });
 

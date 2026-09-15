@@ -224,7 +224,6 @@ MONGODB_LOCAL_URI="mongodb://127.0.0.1:27017/?directConnection=true"       # Dev
 | `openWeatherMap`  | Prévisions météo enrichies (vent, humidité, pluie, ressenti)                                 | OpenWeatherMap |
 | `coinGeckoPrice`  | Prix crypto structurés (multi-devises, market cap, volume, change 24h)                       | CoinGecko      |
 | `coinGeckoMarket` | Market data (cap, volume, rang, filtre catégorie/IDs, pagination)                            | CoinGecko      |
-| `additionTool`    | Addition de deux nombres                                                                     | Interne        |
 | `randomNumber`    | Nombre aléatoire dans un intervalle                                                          | Interne        |
 | `currentTime`     | Heure locale HH:MM:SS                                                                        | Interne        |
 | `stripe_*`        | Customers, produits, paiements                                                               | Stripe API     |
@@ -263,7 +262,6 @@ MONGODB_LOCAL_URI="mongodb://127.0.0.1:27017/?directConnection=true"       # Dev
 | Query                                         | Tool used      |
 | --------------------------------------------- | -------------- |
 | _"Search for latest AI news"_                 | `tavilySearch` |
-| _"What's 42 + 58?"_                           | `additionTool` |
 | _"Give me a random number between 1 and 100"_ | `randomNumber` |
 | _"What time is it?"_                          | `currentTime`  |
 
