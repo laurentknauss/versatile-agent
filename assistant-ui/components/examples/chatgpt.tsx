@@ -17,7 +17,6 @@ import { TooltipIconButton } from '@/components/assistant-ui/elements/tooltip-ic
 import { useAttachmentSrc } from './use-attachment-src';
 import {
   ArrowUpIcon,
-  AudioLines,
   CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -179,17 +178,6 @@ const ComposerPrimaryAction: FC = () => {
             <Mic className="size-5" />
           </TooltipIconButton>
         </ComposerPrimitive.Dictate>
-
-        <TooltipIconButton
-          type="button"
-          tooltip="Use voice mode"
-          side="top"
-          aria-hidden="true"
-          tabIndex={-1}
-          className="flex size-9 items-center justify-center rounded-full bg-[#0d0d0d] text-white hover:bg-[#0d0d0d] dark:bg-white dark:text-black dark:hover:bg-white"
-        >
-          <AudioLines className="size-5" />
-        </TooltipIconButton>
       </AuiIf>
     </div>
   );
