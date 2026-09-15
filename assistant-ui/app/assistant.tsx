@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import { useMemo } from 'react';
+import { AssistantRuntimeProvider } from '@assistant-ui/react';
 import {
   unstable_createLangGraphStream,
   useLangGraphRuntime,
   type LangChainMessage,
-} from "@assistant-ui/react-langgraph";
-import { ChatGPT } from "@/components/examples/chatgpt";
-import { createClient } from "@/lib/chatApi";
-import { createLangGraphThreadListAdapter } from "@/lib/langgraph-thread-list-adapter";
+} from '@assistant-ui/react-langgraph';
+import { ChatGPT } from '@/components/examples/chatgpt';
+import { createClient } from '@/lib/chatApi';
+import { createLangGraphThreadListAdapter } from '@/lib/langgraph-thread-list-adapter';
+import { pdfAttachmentAdapter } from '@/lib/pdf-attachment-adapter';
 
-const ASSISTANT_ID = process.env["NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID"]!;
+const ASSISTANT_ID = process.env['NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID']!;
 
 export function Assistant() {
   const client = useMemo(() => createClient(), []);
@@ -21,15 +22,17 @@ export function Assistant() {
         client,
         assistantId: ASSISTANT_ID,
       }),
-    [client],
+    [client]
   );
-  const threadListAdapter = useMemo(
-    () => createLangGraphThreadListAdapter(client),
-    [client],
-  );
+  const threadListAdapter = useMemo(() => createLangGraphThreadListAdapter(client), [client]);
 
   const runtime = useLangGraphRuntime({
     unstable_allowCancellation: true,
+    // Sans adaptateur, le bouton « + » du composer lève « Attachments are not
+    // supported » (erreur silencieuse : aucun écouteur attachmentAddError).
+    // Celui-ci accepte application/pdf et publie le chemin serveur du fichier,
+    // que l'outil readPdf sait ouvrir.
+    adapters: { attachments: pdfAttachmentAdapter },
     stream,
     create: async () => {
       const { thread_id } = await client.threads.create();

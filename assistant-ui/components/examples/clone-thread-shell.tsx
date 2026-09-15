@@ -108,7 +108,7 @@ export const CloneThreadShell: FC<CloneThreadShellProps> = ({
     <div className="relative flex h-full w-full overflow-hidden">
       <aside
         className={cn(
-          'bg-muted/30 hidden h-full shrink-0 flex-col overflow-hidden border-r transition-[width] duration-200 md:flex',
+          'hidden h-full shrink-0 flex-col overflow-hidden border-r border-white/10 bg-black text-[#FFD589] transition-[width] duration-200 md:flex',
           railClassName,
           sidebarCollapsed ? 'w-12' : 'w-65'
         )}
@@ -118,10 +118,12 @@ export const CloneThreadShell: FC<CloneThreadShellProps> = ({
             <TooltipIconButton
               variant="ghost"
               size="icon"
-              tooltip={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+              tooltip={
+                sidebarCollapsed ? 'Afficher la barre latérale' : 'Masquer la barre latérale'
+              }
               side="right"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="size-8"
+              className="text-[#FFD589] hover:bg-white/10 hover:text-[#FFD589] size-8"
             >
               <PanelLeftIcon className="size-4" />
             </TooltipIconButton>
@@ -141,7 +143,7 @@ export const CloneThreadShell: FC<CloneThreadShellProps> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger render={newThread} />
-                {sidebarCollapsed && <TooltipContent side="right">New Thread</TooltipContent>}
+                {sidebarCollapsed && <TooltipContent side="right">Nouveau chat</TooltipContent>}
               </Tooltip>
             </TooltipProvider>
           ) : (
@@ -178,13 +180,13 @@ export const CloneThreadShell: FC<CloneThreadShellProps> = ({
               render={
                 <Button variant="ghost" size="icon" className="bg-background/70 size-8">
                   <MenuIcon className="size-4" />
-                  <span className="sr-only">Open chat history</span>
+                  <span className="sr-only">Ouvrir l’historique des chats</span>
                 </Button>
               }
             />
           </div>
         )}
-        <SheetContent side="left" className="flex flex-col p-0">
+        <SheetContent side="left" className="flex flex-col bg-black p-0 text-[#FFD589]">
           <SheetTitle className="flex h-12 shrink-0 items-center px-4 text-sm font-medium">
             {sheetTitle ?? 'Chats'}
           </SheetTitle>

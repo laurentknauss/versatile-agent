@@ -36,18 +36,20 @@ import {
   XIcon,
 } from 'lucide-react';
 import { MarkdownText } from '@/components/assistant-ui/elements/markdown-text';
+import { CapabilityStrip } from '@/components/assistant-ui/elements/capability-pictos';
 import { CloneThreadShell } from './clone-thread-shell';
 
 export const ChatGPT: FC = () => {
   return (
     <CloneThreadShell>
       <ThreadPrimitive.Root className="aui-chat-gradient flex h-full flex-col items-stretch bg-[linear-gradient(160deg,#0e4c92_0%,#1877f2_55%,#7db4f5_100%)] px-4 text-white dark:bg-black dark:text-[#ececec]">
-        <div className="hidden shrink-0 items-center justify-center px-1 pt-4 pb-2 md:flex">
+        <div className="flex shrink-0 flex-col items-center gap-2.5 px-1 pt-3 pb-3">
           <img
             src="/logo-versatileagent.png"
             alt="Versatile Agent"
-            className="max-h-24 w-auto max-w-full drop-shadow-md"
+            className="hidden max-h-24 w-auto max-w-full drop-shadow-md md:block"
           />
+          <CapabilityStrip />
         </div>
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <EmptyState />
