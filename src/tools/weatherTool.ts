@@ -1,7 +1,7 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import fetch from 'node-fetch';
-import { ForecastItem, ForecastResponse } from './types/weather';
+import { ForecastResponse } from './types/weather';
 
 /**
  * Format wind speed from m/s to km/h
@@ -28,6 +28,28 @@ const dominantDescription = (descriptions: string[]): string => {
   return Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0];
 };
 
+/** Hard deadline for an OpenWeatherMap request. */
+const FETCH_TIMEOUT_MS = Number(process.env.OPENWEATHERMAP_FETCH_TIMEOUT_MS ?? 15_000);
+
+/**
+ * OpenWeatherMap call with a hard deadline.
+ * node-fetch reports an expired AbortSignal as AbortError, not TimeoutError.
+ */
+async function fetchOpenWeatherMap(url: string) {
+  try {
+    return await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+  } catch (error) {
+    const expired =
+      error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
+
+    if (expired) {
+      throw new Error(`OpenWeatherMap did not respond within ${FETCH_TIMEOUT_MS} ms.`);
+    }
+
+    throw error;
+  }
+}
+
 export const openWeatherMapTool = tool(
   async ({ city, country, days }: { city: string; country?: string; days?: number }) => {
     let apiKey = process.env.OPENWEATHERMAP_API_KEY;
@@ -43,7 +65,7 @@ export const openWeatherMapTool = tool(
     // after skipping today (J+1 shift)
     const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(location)}&appid=${apiKey}&units=metric&cnt=40&lang=fr`;
 
-    const response = await fetch(url);
+    const response = await fetchOpenWeatherMap(url);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -130,14 +152,6 @@ export const openWeatherMapTool = tool(
     if (dates.length === 0) {
       return `❌ No upcoming forecast data available for ${city}${country ? `, ${country}` : ''}. Try again later.`;
     }
-
-    const locationName = `${data.city.name}, ${data.city.country}`;
-
-    // Format date as DD/MM
-    const fmtDate = (iso: string): string => {
-      const [y, m, d] = iso.split('-');
-      return `${d}/${m}`;
-    };
 
     const forecast = dates.map((date) => {
       const day = forecastByDay[date];

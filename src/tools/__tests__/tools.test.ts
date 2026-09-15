@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ALL_TOOLS_LIST, additionTool, currentTimeTool } from '../tools';
-import { randomNumberTool } from '../randomNumberTool';
+import { ALL_TOOLS_LIST } from '../tools';
+import { currentTimeTool } from '../currentTimeTool';
 
 describe('ALL_TOOLS_LIST', () => {
   it('should be defined and be an array', () => {
@@ -13,13 +13,13 @@ describe('ALL_TOOLS_LIST', () => {
   });
 
   it('should contain unique tool names', () => {
-    const names = ALL_TOOLS_LIST.map(tool => tool.name);
+    const names = ALL_TOOLS_LIST.map((tool) => tool.name);
     const uniqueNames = new Set(names);
     expect(uniqueNames.size).toBe(names.length);
   });
 
   it('every tool should have a name, description, and schema', () => {
-    ALL_TOOLS_LIST.forEach(tool => {
+    ALL_TOOLS_LIST.forEach((tool) => {
       expect(tool.name).toBeTruthy();
       expect(typeof tool.name).toBe('string');
       expect(tool.description).toBeTruthy();
@@ -29,62 +29,25 @@ describe('ALL_TOOLS_LIST', () => {
     });
   });
 
-  it('should include the addition tool', () => {
-    const name = 'additionTool';
-    expect(ALL_TOOLS_LIST.some(t => t.name === name)).toBe(true);
-  });
-
   it('should include the current time tool', () => {
-    expect(ALL_TOOLS_LIST.some(t => t.name === 'currentTime')).toBe(true);
+    expect(ALL_TOOLS_LIST.some((t) => t.name === 'currentTime')).toBe(true);
   });
 
   it('should include both coinGecko tools', () => {
-    const names = ALL_TOOLS_LIST.map(t => t.name);
+    const names = ALL_TOOLS_LIST.map((t) => t.name);
     expect(names).toContain('coinGeckoPrice');
     expect(names).toContain('coinGeckoMarket');
   });
 
   it('should include the weather tool', () => {
-    const names = ALL_TOOLS_LIST.map(t => t.name);
+    const names = ALL_TOOLS_LIST.map((t) => t.name);
     expect(names).toContain('openWeatherMap');
   });
 
   it('should include Stripe tools', () => {
-    const names = ALL_TOOLS_LIST.map(t => t.name);
-    const stripeTools = names.filter(n => n.toLowerCase().startsWith('stripe'));
+    const names = ALL_TOOLS_LIST.map((t) => t.name);
+    const stripeTools = names.filter((n) => n.toLowerCase().startsWith('stripe'));
     expect(stripeTools.length).toBeGreaterThanOrEqual(1);
-  });
-});
-
-describe('additionTool', () => {
-  it('should exist and have the correct name', () => {
-    expect(additionTool).toBeDefined();
-    expect(additionTool.name).toBe('additionTool');
-  });
-
-  it('should add two positive numbers correctly', async () => {
-    const result = await additionTool.invoke({ a: 5, b: 3 });
-    expect(result).toBe('8');
-  });
-
-  it('should handle negative numbers', async () => {
-    const result = await additionTool.invoke({ a: -5, b: 10 });
-    expect(result).toBe('5');
-  });
-
-  it('should handle zero values', async () => {
-    const result = await additionTool.invoke({ a: 0, b: 0 });
-    expect(result).toBe('0');
-  });
-
-  it('should handle decimal numbers', async () => {
-    const result = await additionTool.invoke({ a: 1.5, b: 2.5 });
-    expect(result).toBe('4');
-  });
-
-  it('should return the result as a string', async () => {
-    const result = await additionTool.invoke({ a: 100, b: 200 });
-    expect(typeof result).toBe('string');
   });
 });
 
