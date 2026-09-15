@@ -37,3 +37,5 @@ okf/
 
 # PDFs (local analysis, not source)
 *.pdf
+# …sauf la fixture PDF des tests de l'outil de lecture
+!src/tools/__tests__/fixtures/*.pdf

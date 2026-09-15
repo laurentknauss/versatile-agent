@@ -7,6 +7,7 @@ import { ALL_STRIPE_TOOLS } from './stripeTool';
 import { randomNumberTool } from './randomNumberTool';
 import { tavilySearchTool } from './tavilyTool';
 import { recallMemoriesTool, saveMemoryTool } from './memoryTools';
+import { readPdfTool } from './pdfReader';
 
 const additionFunc = async ({ a, b }: { a: number; b: number }) => {
   return (a + b).toString();
@@ -43,6 +44,7 @@ export const ALL_TOOLS_LIST = [
   randomNumberTool,
   currentTimeTool,
   tavilySearchTool,
+  readPdfTool,
   ...ALL_STRIPE_TOOLS,
   // Long-term memory tools: the agent always gets a store (local MongoDB in dev,
   // remote MongoDB Atlas in production — see agentWithTools.ts).
