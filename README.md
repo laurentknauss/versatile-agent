@@ -49,7 +49,7 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 | **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                    |
 | **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français      |
 
-![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation-demo.png)
+![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
 
 ### 🎙️ Dictée vocale — deux contraintes
 
