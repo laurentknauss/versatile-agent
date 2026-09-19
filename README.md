@@ -18,6 +18,8 @@
 
 ![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
 
+![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
+
 ---
 
 ## 🌿 Branches — quelle version lire ?
@@ -48,8 +50,6 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 | **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués à l'utilisateur                                       |
 | **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                    |
 | **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français      |
-
-![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
 
 ### 🎙️ Dictée vocale — deux contraintes
 
