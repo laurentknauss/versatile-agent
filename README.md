@@ -11,14 +11,14 @@
 
 > **Monorepo frontend + backend : agent LangGraph v1 (`createAgent`, 14 outils, mémoire long terme) et landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 135 tests Vitest, pnpm.**
 
+![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
+
+![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
+
 | Côté            | Contenu                                                                                                                                                         |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, **14 outils**, mémoire long terme, store MongoDB, pas de `StateGraph` manuel |
 | **🖥️ Frontend** | Landing page **ChatGPT-like** dans `assistant-ui/` — Next.js 16, sidebar d'historique (lister / renommer / supprimer), streaming SSE, proxy API                 |
-
-![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
-
-![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
 
 ---
 
