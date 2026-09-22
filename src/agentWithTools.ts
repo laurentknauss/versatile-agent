@@ -1,6 +1,9 @@
-import { createAgent } from 'langchain';
 import { ChatDeepSeek } from '@langchain/deepseek';
+import { ChatOpenAI } from '@langchain/openai';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
+import { createAgent, createMiddleware, type BuiltInState, AIMessage } from 'langchain';
+import OpenAI from 'openai'; // important  pour  la moderation beforeHook avec omni-moderation-latest
 import { ALL_TOOLS_LIST } from './tools/tools';
 
 const SYSTEM_PROMPT = `
@@ -65,10 +68,67 @@ ERROR HANDLING:
 - Do not expose internal stack traces or implementation details unless explicitly requested.
 `;
 
-const model = new ChatDeepSeek({
-  model: 'deepseek-flash',
-  streaming: true,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
+
+const moderationMiddleware = createMiddleware({
+  name: 'OpenAIModeration',
+
+  beforeModel: {
+    hook: async (state: BuiltInState) => {
+      const lastMessage = state.messages.at(-1);
+
+      const input = typeof lastMessage?.content === 'string' ? lastMessage.content : '';
+
+      if (!input) return;
+
+      const moderation = await openai.moderations.create({
+        model: 'omni-moderation-latest',
+        input,
+      });
+
+      if (moderation.results[0]?.flagged) {
+        // Refus conversationnel : le run se termine proprement avec un message
+        // assistant visible dans le fil (au lieu d'une erreur de run brute).
+        return {
+          messages: [
+            new AIMessage(
+              'Désolé, votre demande a été bloquée par la politique de modération de contenu.'
+            ),
+          ],
+          jumpTo: 'end',
+        };
+      }
+    },
+    canJumpTo: ['end'],
+  },
+});
+
+// Model registry — switch provider at launch with CHAT_MODEL (default: deepseek).
+// CHAT_MODEL=kimi pnpm dev  →  run on Kimi (Moonshot, OpenAI-compatible API)
+const MODEL_REGISTRY = {
+  deepseek: () => new ChatDeepSeek({ model: 'deepseek-flash', streaming: true }),
+  kimi: () =>
+    new ChatOpenAI({
+      // ⚠️ nom de modèle à confirmer chez Moonshot
+      model: 'kimi-k3',
+      apiKey: process.env.MOONSHOT_API_KEY,
+      configuration: { baseURL: 'https://api.moonshot.ai/v1' },
+      streaming: true,
+    }),
+} satisfies Record<string, () => BaseChatModel>;
+
+type ModelKey = keyof typeof MODEL_REGISTRY;
+
+const modelKey = (process.env.CHAT_MODEL ?? 'deepseek') as ModelKey;
+if (!(modelKey in MODEL_REGISTRY)) {
+  throw new Error(
+    `Unknown CHAT_MODEL "${modelKey}" — expected: ${Object.keys(MODEL_REGISTRY).join(', ')}`
+  );
+}
+
+const model = MODEL_REGISTRY[modelKey]();
 
 // Long-term memory store (LangGraph BaseStore).
 //
@@ -126,4 +186,5 @@ export const agent = createAgent({
   tools: ALL_TOOLS_LIST,
   store,
   systemPrompt: SYSTEM_PROMPT,
+  middleware: [moderationMiddleware],
 });

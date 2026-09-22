@@ -27,10 +27,12 @@
     "@langchain/langgraph": "^1.4.13",
     "@langchain/langgraph-checkpoint": "^1.1.5",
     "@langchain/langgraph-checkpoint-mongodb": "^1.4.1",
+    "@langchain/openai": "^1.5.13",
     "@langchain/tavily": "latest",
     "dotenv": "^16.5.0",
     "langchain": "^1.5.11",
     "node-fetch": "^3.3.2",
+    "openai": "^7.21.0",
     "stripe": "^18.4.0",
     "unpdf": "^1.8.1",
     "zod": "3.25.67"
