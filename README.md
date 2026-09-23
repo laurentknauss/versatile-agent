@@ -442,4 +442,15 @@ Les hooks Husky vérifient au commit (lint-staged : ESLint + Prettier + `tsc`) e
 
 ## 📄 Licence
 
-MIT — champ `license` de [`package.json`](package.json).
+MIT — voir [`LICENSE`](LICENSE) ; le champ `license` de [`package.json`](package.json) porte la même valeur.
+
+---
+
+## 🔎 Mots-clés
+
+Agent IA en TypeScript, LangGraph v1 et `createAgent`, LangChain.js, chatbot ChatGPT-like, interface de chat
+en streaming, assistant-ui, Next.js 16, React, mémoire long terme d'un agent (LangGraph `store` + MongoDB),
+outillage d'agent (météo, crypto, cinéma, recherche web, Stripe, lecture de PDF), modération des entrées,
+monorepo pnpm, tests Vitest, DeepSeek, OpenAI.
+
+`#LangChain` `#LangGraph` `#LangGraphJS` `#LangChainJS` `#TypeScript` `#NextJS` `#React` `#AIAgents` `#LLM` `#Chatbot` `#AIChat` `#ChatGPT` `#Streaming` `#AssistantUI` `#MongoDB` `#DeepSeek` `#OpenAI` `#Monorepo` `#pnpm` `#Vitest` `#AgentMemory` `#Moderation`
