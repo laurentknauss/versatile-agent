@@ -12,17 +12,11 @@
 
 > **Monorepo frontend + backend : agent LangGraph v1 (`createAgent`, 17 outils, mémoire long terme, `Generative UI` — une carte par outil rendu) et landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 158 tests Vitest, pnpm.**
 
-![Landing page — Jeeves, prêt à répondre, composer vide](assets/landing-page.png)
+_Generative UI — un rendu dédié par outil (démo vidéo, 25 s) :_
 
-_Generative UI — un rendu dédié par outil :_
+https://github.com/user-attachments/assets/95eb4911-32a4-4da4-8d0b-dcd5f52c09fc
 
-![Cinéma — recherche TMDB : affiche, année de sortie en très gros, note sur 10, synopsis et autres résultats](assets/generative-ui-cinema.png)
-
-![Vols — suivi en direct : anneau de progression du trajet, télémétrie et fiche appareil](assets/generative-ui-vol.png)
-
-![Météo — prévisions OpenWeatherMap : la carte assombrit le ciel de la condition pour trancher avec le fond bleu](assets/generative-ui-meteo.png)
-
-![Deux outils dans un même fil — carte cinéma et carte météo, chacune rendue par son propre composant](assets/generative-ui-deux-rendus.png)
+_Fiche cinéma, suivi de vol en direct, carte météo — puis une réponse sans carte._
 
 | Côté            | Contenu                                                                                                                                                                                        |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -226,10 +220,11 @@ n'apparaît pas, la réponse de l'agent reste.
 | `flightTracker`  | Suivi de vol              | Tracé pointillé parcouru par un point lumineux animé, **anneau de progression** du trajet (82 % sur la capture), tuiles de télémétrie (position, altitude, vitesse, cap) et fiche appareil (immatriculation, code hex, dernier signal ADS-B)                              |
 | `tmdbSearch`     | Fiche séance cinéma       | Affiche TMDB, année en très gros et « sorti il y a N ans », anneau de note coloré par le score, accent **par époque** (classique / argentique / moderne / numérique), vignettes des autres résultats                                                                      |
 
-### Captures
+### Démo
 
-Les captures des trois cartes sont **en haut de ce README**. Le quatrième rendu, le tableau
-d'aéroport, s'obtient depuis la pastille « Agent vols en direct » de la landing page.
+La démo vidéo est **en haut de ce README** : elle enchaîne trois cartes rendues en situation
+(cinéma, vol, météo), puis une réponse sans carte. Le tableau d'aéroport s'obtient depuis la
+pastille « Agent vols en direct » de la landing page.
 
 ### Requêtes de démonstration
 
@@ -496,12 +491,6 @@ Le dossier `okf/` contient la documentation auto-suffisante (format _Open Knowle
 | ESLint                    | 9       |
 | Prettier                  | 3       |
 | Husky                     | 9       |
-
----
-
-## 📸 Captures de l'application
-
-![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; chaque outil rendu affiche sa propre carte, les appels d'outils sans rendu restent invisibles](assets/conversation.png)
 
 ---
 
