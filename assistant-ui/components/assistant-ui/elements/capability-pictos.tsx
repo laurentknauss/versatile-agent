@@ -51,8 +51,6 @@ type Capability = {
   hint: string;
   tile: string;
   Visual: FC<VisualProps>;
-  /** Taille du visuel dans la tuile — défaut `size-9`, agrandi pour une image pleine. */
-  visualClassName?: string;
   prompt: string;
   autoSend: boolean;
 };
@@ -63,7 +61,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Déposez un PDF avec le bouton « + », puis envoyez : l’agent le lit et cite la page.',
     tile: 'from-rose-500 to-red-600',
     Visual: PdfVisual,
-    visualClassName: 'size-10',
     prompt: 'Résume ce document et donne-moi les 3 chiffres clés avec leur numéro de page.',
     autoSend: false,
   },
@@ -72,7 +69,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Prévisions OpenWeatherMap — cliquez pour lancer la démo.',
     tile: 'from-sky-400 to-blue-600',
     Visual: WeatherVisual,
-    visualClassName: 'size-10',
     prompt: 'Quel temps fera-t-il à Paris demain ?',
     autoSend: true,
   },
@@ -81,7 +77,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Solde, clients et derniers événements de votre compte Stripe.',
     tile: 'from-indigo-500 to-violet-600',
     Visual: StripeVisual,
-    visualClassName: 'size-10',
     prompt: 'Quel est le solde de mon compte Stripe et quels sont les derniers événements ?',
     autoSend: true,
   },
@@ -90,7 +85,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Cours CoinGecko et actualités via recherche web.',
     tile: 'from-amber-400 to-orange-600',
     Visual: BitcoinVisual,
-    visualClassName: 'size-10',
     prompt: 'Quelles sont les dernières nouvelles sur le Bitcoin ?',
     autoSend: true,
   },
@@ -99,7 +93,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Recherche TMDB — date de sortie, note, résumé et affiche. Cliquez pour lancer la démo.',
     tile: 'from-violet-500 to-fuchsia-600',
     Visual: CinemaVisual,
-    visualClassName: 'size-10',
     prompt: 'Quand le Fabuleux Destin d’Amélie Poulain est-il sorti au cinéma ?',
     autoSend: true,
   },
@@ -108,7 +101,6 @@ const CAPABILITIES: Capability[] = [
     hint: 'Suivi de vol AirLabs — position, retard, terminal et porte. Cliquez pour lancer la démo.',
     tile: 'from-cyan-500 to-blue-800',
     Visual: FlightVisual,
-    visualClassName: 'size-10',
     prompt: 'Où se trouve le vol U24573 en ce moment ?',
     autoSend: true,
   },
@@ -119,24 +111,24 @@ const CAPABILITIES: Capability[] = [
  * Chaque pastille est un vrai raccourci : elle pré-remplit ou envoie un prompt.
  */
 export const CapabilityStrip: FC = () => (
-  <div className="flex w-full flex-col items-center gap-3">
-    {CAPABILITIES.map(({ label, hint, tile, Visual, visualClassName, prompt, autoSend }) => (
+  <div className="grid w-full max-w-2xl grid-cols-2 gap-2 sm:grid-cols-3">
+    {CAPABILITIES.map(({ label, hint, tile, Visual, prompt, autoSend }) => (
       <ThreadPrimitive.Suggestion
         key={label}
         prompt={prompt}
         send={autoSend}
         title={hint}
-        className="group/cap relative flex w-full max-w-80 items-center gap-3.5 overflow-hidden rounded-full border border-white/25 bg-white/12 py-2.5 pr-6 pl-2.5 text-white transition-colors hover:bg-white/22 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
+        className="group/cap relative flex w-full items-center gap-2 overflow-hidden rounded-full border border-white/25 bg-white/12 py-1.5 pr-3 pl-1.5 text-white transition-colors hover:bg-white/22 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
       >
         <span
           className={cn(
-            'flex size-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-sm ring-1 ring-white/30',
+            'flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-sm ring-1 ring-white/30',
             tile
           )}
         >
-          <Visual className={cn('size-9', visualClassName)} />
+          <Visual className="size-5" />
         </span>
-        <span className="text-base font-medium whitespace-nowrap">{label}</span>
+        <span className="truncate text-xs font-medium sm:text-sm">{label}</span>
         <ShineBorder
           shineColor={['#ffffff', '#bae6fd']}
           duration={7}

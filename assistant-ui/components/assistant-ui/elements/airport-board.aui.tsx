@@ -3,6 +3,7 @@
 import type { FC } from 'react';
 
 import { asMessage, asRecord } from '@/lib/tool-result';
+import { BorderBeam } from '@/components/assistant-ui/elements/border-beam';
 import { shortClock } from '@/lib/flight-format';
 
 /**
@@ -100,16 +101,15 @@ const stateOf = (
   direction: Board['direction']
 ): { label: string; tone: string } => {
   if (flight.airlabsStatus === 'cancelled')
-    return { label: 'annulé', tone: 'bg-rose-100 text-rose-700' };
+    return { label: 'annulé', tone: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30' };
   if (flight.actual) {
-    return direction === 'arrivals'
-      ? { label: 'posé', tone: 'bg-emerald-100 text-emerald-800' }
-      : { label: 'parti', tone: 'bg-emerald-100 text-emerald-800' };
+    const tone = 'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30';
+    return direction === 'arrivals' ? { label: 'posé', tone } : { label: 'parti', tone };
   }
   if (flight.estimated && flight.scheduled && flight.estimated !== flight.scheduled) {
-    return { label: 'retardé', tone: 'bg-amber-100 text-amber-800' };
+    return { label: 'retardé', tone: 'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30' };
   }
-  return { label: 'prévu', tone: 'bg-slate-100 text-slate-600' };
+  return { label: 'prévu', tone: 'bg-slate-800 text-slate-300 ring-1 ring-slate-700' };
 };
 
 const Cell: FC<{ className?: string; children: React.ReactNode }> = ({ className, children }) => (
@@ -123,11 +123,11 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
   if (!board) {
     const message = asMessage(result);
     return (
-      <div className="my-2 overflow-hidden rounded-2xl border border-black/10 bg-white text-slate-900 shadow-sm">
-        <div className="border-b border-black/10 px-4 py-2.5 text-sm font-semibold text-slate-900">
+      <div className="my-2 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-slate-100 shadow-lg shadow-slate-950/40">
+        <div className="border-b border-slate-800 px-4 py-2.5 text-sm font-semibold tracking-wide text-amber-300 uppercase">
           Tableau des vols{requested ? ` · ${requested}` : ''}
         </div>
-        <p className="px-4 py-3 text-sm text-slate-600">
+        <p className="px-4 py-3 text-sm text-slate-400">
           {message ?? 'Interrogation des mouvements en cours…'}
         </p>
       </div>
@@ -141,12 +141,14 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
     : 'prochaines heures';
 
   return (
-    <div className="my-2 overflow-hidden rounded-2xl border border-black/10 bg-white text-slate-900 shadow-sm">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-black/10 px-4 py-3">
-        <p className="text-sm font-semibold text-slate-900">
+    <div className="relative my-2 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 text-slate-100 shadow-lg shadow-slate-950/40">
+      <BorderBeam size={90} duration={9} colorFrom="#fcd34d" colorTo="#f59e0b" />
+      <div className="h-0.5 w-full bg-gradient-to-r from-amber-400 via-amber-500/40 to-transparent" />
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-slate-800 px-4 py-3">
+        <p className="text-sm font-semibold tracking-wide text-amber-300 uppercase">
           {isArrivals ? 'Arrivées' : 'Départs'} · <span className="font-mono">{board.airport}</span>
         </p>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-400">
           {board.flightsOnBoard ?? board.flights.length} mouvement
           {(board.flightsOnBoard ?? board.flights.length) > 1 ? 's' : ''} · fenêtre AirLabs{' '}
           {covered}
@@ -154,15 +156,15 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
       </div>
 
       {board.note ? (
-        <p className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-[11px] text-amber-900">
+        <p className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-[11px] text-amber-200">
           {board.note}
         </p>
       ) : null}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[19rem] border-collapse text-left text-sm text-slate-800">
+        <table className="w-full min-w-[19rem] border-collapse text-left text-sm text-slate-200">
           <thead>
-            <tr className="text-[11px] tracking-wide text-slate-500 uppercase">
+            <tr className="text-[10px] tracking-[0.14em] text-amber-200/60 uppercase">
               <th className="px-2.5 py-2.5 font-medium">Heure</th>
               <th className="px-2.5 py-2.5 font-medium">Vol</th>
               <th className="hidden px-2.5 py-2.5 font-medium sm:table-cell">Cie</th>
@@ -187,21 +189,23 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
               return (
                 <tr
                   key={`${flight.iata ?? 'vol'}-${index}`}
-                  className="border-t border-black/5 align-top odd:bg-slate-50"
+                  className="border-t border-slate-800/70 align-top odd:bg-slate-900/40"
                 >
                   <Cell>
-                    <span className="font-mono text-[15px] font-semibold text-slate-900">
+                    <span className="font-mono text-[15px] font-semibold text-amber-300">
                       {clock ?? '—'}
                     </span>
                     {relative ? (
-                      <span className="mt-0.5 block text-[11px] text-slate-400">{relative}</span>
+                      <span className="mt-0.5 block text-[11px] text-slate-500">{relative}</span>
                     ) : null}
                   </Cell>
                   <Cell>
-                    <span className="font-semibold text-slate-900">{flight.iata ?? '—'}</span>
+                    <span className="font-mono font-semibold text-slate-100">
+                      {flight.iata ?? '—'}
+                    </span>
                     {flight.marketingCodes.length > 0 ? (
                       <span
-                        className="ml-1.5 rounded-full bg-slate-200/80 px-1.5 py-0.5 text-[10px] text-slate-600"
+                        className="ml-1.5 rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300"
                         title={`Vendu aussi sous ${flight.marketingCodes.join(', ')}`}
                       >
                         +{flight.marketingCodes.length}
@@ -209,26 +213,24 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
                     ) : null}
                   </Cell>
                   <Cell className="hidden sm:table-cell">
-                    <span className="font-mono text-xs text-slate-500">
+                    <span className="font-mono text-xs text-slate-400">
                       {flight.airlineIata ?? '—'}
                     </span>
                   </Cell>
                   <Cell>
-                    <span className="font-mono text-slate-700">
-                      {flight.counterpartIata ?? '—'}
-                    </span>
+                    <span className="font-mono text-sky-300">{flight.counterpartIata ?? '—'}</span>
                   </Cell>
                   <Cell className="hidden sm:table-cell">
                     {flight.delayMinutes == null ? (
-                      <span className="text-slate-400">—</span>
+                      <span className="text-slate-600">—</span>
                     ) : delayed ? (
-                      <span className="font-medium text-amber-700">+{flight.delayMinutes} min</span>
+                      <span className="font-medium text-amber-400">+{flight.delayMinutes} min</span>
                     ) : (
-                      <span className="text-emerald-700">à l&apos;heure</span>
+                      <span className="text-emerald-400">à l&apos;heure</span>
                     )}
                   </Cell>
                   <Cell className="hidden md:table-cell">
-                    <span className="font-mono text-xs text-slate-500">{slot || '—'}</span>
+                    <span className="font-mono text-xs text-slate-400">{slot || '—'}</span>
                   </Cell>
                   <Cell>
                     <span
@@ -244,7 +246,7 @@ export const AirportBoardTable: FC<{ args: unknown; result: unknown }> = ({ args
         </table>
       </div>
 
-      <p className="border-t border-black/10 bg-slate-50 px-4 py-3 text-[11px] text-slate-500">
+      <p className="border-t border-slate-800 bg-slate-900/60 px-4 py-3 text-[11px] text-slate-500">
         Heures locales de {board.airport}
         {window.returnedRows != null ? ` · ${window.returnedRows} lignes brutes` : ''}
         {window.physicalFlights != null ? ` pour ${window.physicalFlights} vols` : ''}

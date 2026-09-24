@@ -4,6 +4,7 @@ import { defineToolkit, externalTool } from '@assistant-ui/react';
 
 import { AirportBoardTable } from '@/components/assistant-ui/elements/airport-board.aui';
 import { FlightTrackerCard } from '@/components/assistant-ui/elements/flight-tracker.aui';
+import { MovieCard } from '@/components/assistant-ui/elements/movie-card.aui';
 import { WeatherForecastStrip } from '@/components/assistant-ui/elements/weather-card.aui';
 
 /**
@@ -26,5 +27,9 @@ export default defineToolkit({
   openWeatherMap: {
     execute: externalTool(),
     render: ({ args, result }) => <WeatherForecastStrip args={args} result={result} />,
+  },
+  tmdbSearch: {
+    execute: externalTool(),
+    render: ({ args, result }) => <MovieCard args={args} result={result} />,
   },
 });

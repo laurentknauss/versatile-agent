@@ -7,19 +7,19 @@
 
 @theme inline {
   @keyframes collapsible-down {
-  from {
-    height: 0;
+    from {
+      height: 0;
     }
-  to {
-    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+    to {
+      height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
     }
   }
   @keyframes collapsible-up {
-  from {
-    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+    from {
+      height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
     }
-  to {
-    height: 0;
+    to {
+      height: 0;
     }
   }
 }
@@ -185,6 +185,96 @@
     }
     100% {
       background-position: 0% 0%;
+    }
+  }
+}
+
+/* Effets Magic UI portés en CSS pur (même approche que Shine Border ci-dessus) :
+   les originaux animent en JS via `motion`, on garde le rendu, pas la dépendance. */
+@theme inline {
+  /* Border Beam (magicui.design/r/border-beam.json) : une comète fait le tour du cadre. */
+  --animate-border-beam: border-beam var(--border-beam-duration, 6s) linear infinite;
+
+  @keyframes border-beam {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+
+  /* Light Rays (magicui.design/r/light-rays.json) : rais de lumière qui balaient le ciel. */
+  --animate-light-rays: light-rays var(--ray-duration, 14s) ease-in-out infinite;
+
+  @keyframes light-rays {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    35%,
+    65% {
+      opacity: var(--ray-opacity, 0.45);
+    }
+  }
+
+  /* Ambiances météo — la carte prend le ciel de la condition renvoyée par l'outil. */
+  --animate-rain-fall: rain-fall 0.85s linear infinite;
+
+  @keyframes rain-fall {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 0 28px;
+    }
+  }
+
+  --animate-snow-drift: snow-drift 4s linear infinite;
+
+  @keyframes snow-drift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 18px 40px;
+    }
+  }
+
+  --animate-storm-flash: storm-flash 7s ease-in-out infinite;
+
+  @keyframes storm-flash {
+    0%,
+    90%,
+    100% {
+      opacity: 0;
+    }
+    92% {
+      opacity: 0.5;
+    }
+    94% {
+      opacity: 0.08;
+    }
+    96% {
+      opacity: 0.35;
+    }
+  }
+
+  /* Trajet de vol : la lumière parcourt la ligne départ → arrivée. */
+  --animate-route-beam: route-beam 3.6s ease-in-out infinite;
+
+  @keyframes route-beam {
+    0% {
+      left: 0%;
+      opacity: 0;
+    }
+    12%,
+    88% {
+      opacity: 1;
+    }
+    100% {
+      left: calc(100% - 6px);
+      opacity: 0;
     }
   }
 }
