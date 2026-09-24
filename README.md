@@ -20,7 +20,7 @@ _Generative UI — un rendu dédié par outil :_
 
 ![Vols — suivi en direct : anneau de progression du trajet, télémétrie et fiche appareil](assets/generative-ui-vol.png)
 
-![Météo — prévisions multi-jours : ciel piloté par la condition et ambiance animée](assets/generative-ui-meteo.png)
+![Météo — prévisions OpenWeatherMap : la carte assombrit le ciel de la condition pour trancher avec le fond bleu](assets/generative-ui-meteo.png)
 
 ![Deux outils dans un même fil — carte cinéma et carte météo, chacune rendue par son propre composant](assets/generative-ui-deux-rendus.png)
 
@@ -44,23 +44,23 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 
 ## ✨ Fonctionnalités
 
-| Capacité                  | Détail                                                                                                                                   |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`                                            |
-| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité de précipitations) via OpenWeatherMap                                 |
-| **🪙 Crypto**             | Prix et market data via CoinGecko (multi-devises, filtres catégorie / IDs, multi-timeframe, pagination)                                  |
-| **🎬 Cinéma**             | Recherche dans la base TMDB — titre, date de sortie, note, résumé localisé, URL d'affiche                                                |
-| **🔍 Recherche web**      | Recherche web via Tavily                                                                                                                 |
-| **💳 Stripe**             | Compte, solde, clients, paiements (API Stripe)                                                                                           |
-| **📄 Documents**          | Lecture PDF par URL ou fichier local (racines autorisées, plafond de taille, recherche par mot-clé avec contexte)                        |
-| **🧮 Utilitaires**        | Heure locale courante, nombre aléatoire dans un intervalle                                                                               |
-| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore`), namespace `memories/<userId>`                                 |
-| **⏱️ Résilience réseau**  | Échéance sur **chaque** appel sortant : 15 s par requête HTTP, 10 s × 1 retry pour Stripe, 5 s / 20 s pour MongoDB                       |
-| **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués puis remplacés par la carte de l'outil rendu                                |
-| **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                                          |
-| **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français                            |
-| **✈️ Aviation**           | Vol en temps réel (`flightTracker`), départs/arrivées d'un aéroport (`airportBoard`), résolution de codes (`aviationLookup`) via AirLabs |
-| **🎨 Generative UI**      | 4 outils rendus affichent une carte dédiée — aéroport (FIDS), météo (ciel piloté par la donnée), vol (radar), cinéma (fiche séance)      |
+| Capacité                  | Détail                                                                                                                                                                                                                             |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`                                                                                                                                      |
+| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité de précipitations) via OpenWeatherMap                                                                                                                           |
+| **🪙 Crypto**             | Prix et market data via CoinGecko (multi-devises, filtres catégorie / IDs, multi-timeframe, pagination)                                                                                                                            |
+| **🎬 Cinéma**             | Recherche dans la base TMDB — titre, date de sortie, note, résumé localisé, URL d'affiche                                                                                                                                          |
+| **🔍 Recherche web**      | Recherche web via Tavily                                                                                                                                                                                                           |
+| **💳 Stripe**             | Compte, solde, clients, paiements (API Stripe)                                                                                                                                                                                     |
+| **📄 Documents**          | Lecture PDF par URL ou fichier local (racines autorisées, plafond de taille, recherche par mot-clé avec contexte)                                                                                                                  |
+| **🧮 Utilitaires**        | Heure locale courante, nombre aléatoire dans un intervalle                                                                                                                                                                         |
+| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore`), namespace `memories/<userId>`                                                                                                                           |
+| **⏱️ Résilience réseau**  | Échéance sur **chaque** appel sortant : 15 s par requête HTTP, 10 s × 1 retry pour Stripe, 5 s / 20 s pour MongoDB                                                                                                                 |
+| **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués puis remplacés par la carte de l'outil rendu                                                                                                                          |
+| **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                                                                                                                                    |
+| **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français                                                                                                                      |
+| **✈️ Aviation**           | Vol en temps réel (`flightTracker`), départs/arrivées d'un aéroport (`airportBoard`), résolution de codes (`aviationLookup`) via AirLabs                                                                                           |
+| **🎨 Generative UI**      | 4 outils rendus affichent une carte dédiée — aéroport (FIDS), météo (ciel piloté par la donnée), vol (radar), cinéma (fiche séance) — et le prompt système interdit au modèle de recopier les valeurs déjà affichées par une carte |
 
 ### 🎙️ Dictée vocale — deux contraintes
 
@@ -219,12 +219,12 @@ tool_call "airportBoard" ──► graphe LangGraph (src/tools/*) ──► payl
 dans le bundle client. Les outils sans rendu dédié retombent sur `tool-fallback.aui.tsx` — la carte
 n'apparaît pas, la réponse de l'agent reste.
 
-| Outil            | Carte                     | Ce qui pilote le rendu                                                                                                                                                                                                                       |
-| ---------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `airportBoard`   | Tableau d'aéroport (FIDS) | Noir ardoise et rail ambre, heures en `font-mono`, états en pastilles (posé / parti, retardé, annulé), codeshares fusionnés sur la ligne du vol réellement opéré                                                                             |
-| `openWeatherMap` | Météo multi-jours         | **Le ciel suit la donnée** : la carte prend le dégradé de la condition la plus marquante des jours affichés — rais de lumière sur ciel dégagé, rideau de pluie, flocons ou flash d'orage selon la météo                                      |
-| `flightTracker`  | Suivi de vol              | Tracé pointillé parcouru par un point lumineux animé, **anneau de progression** du trajet (82 % sur la capture), tuiles de télémétrie (position, altitude, vitesse, cap) et fiche appareil (immatriculation, code hex, dernier signal ADS-B) |
-| `tmdbSearch`     | Fiche séance cinéma       | Affiche TMDB, année en très gros et « sorti il y a N ans », anneau de note coloré par le score, accent **par époque** (classique / argentique / moderne / numérique), vignettes des autres résultats                                         |
+| Outil            | Carte                     | Ce qui pilote le rendu                                                                                                                                                                                                                                                    |
+| ---------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `airportBoard`   | Tableau d'aéroport (FIDS) | Noir ardoise et rail ambre, heures en `font-mono`, états en pastilles (posé / parti, retardé, annulé), codeshares fusionnés sur la ligne du vol réellement opéré                                                                                                          |
+| `openWeatherMap` | Météo multi-jours         | **Le ciel suit la donnée** : le dégradé de la condition la plus marquante des jours affichés passe sous un voile ardoise très sombre qui tranche avec le fond bleu de la page — rais de lumière sur ciel dégagé, rideau de pluie, flocons ou flash d'orage selon la météo |
+| `flightTracker`  | Suivi de vol              | Tracé pointillé parcouru par un point lumineux animé, **anneau de progression** du trajet (82 % sur la capture), tuiles de télémétrie (position, altitude, vitesse, cap) et fiche appareil (immatriculation, code hex, dernier signal ADS-B)                              |
+| `tmdbSearch`     | Fiche séance cinéma       | Affiche TMDB, année en très gros et « sorti il y a N ans », anneau de note coloré par le score, accent **par époque** (classique / argentique / moderne / numérique), vignettes des autres résultats                                                                      |
 
 ### Captures
 

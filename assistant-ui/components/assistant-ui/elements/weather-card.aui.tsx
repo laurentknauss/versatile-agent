@@ -228,6 +228,7 @@ export const WeatherForecastStrip: FC<{ args: unknown; result: unknown }> = ({ a
       <div
         className={`relative my-2 overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br text-white shadow-lg ${NEUTRAL_SKY}`}
       >
+        <span aria-hidden className="absolute inset-0 bg-slate-950/55" />
         <SkyAmbience kind="cloud" />
         <div className="relative flex items-center gap-2 border-b border-white/15 px-4 py-2.5">
           <CloudSunIcon className="size-4 text-white/70" />
@@ -249,6 +250,7 @@ export const WeatherForecastStrip: FC<{ args: unknown; result: unknown }> = ({ a
     <div
       className={`relative my-2 overflow-hidden rounded-2xl border border-white/20 bg-linear-to-br text-white shadow-lg ${surface}`}
     >
+      <span aria-hidden className="absolute inset-0 bg-slate-950/55" />
       <SkyAmbience kind={ambience} />
       <div className="relative flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-white/15 px-4 py-3">
         <p className="flex items-center gap-2 text-sm font-semibold">
