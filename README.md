@@ -16,6 +16,14 @@
 
 ![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; chaque outil rendu affiche sa propre carte, les appels d'outils sans rendu restent invisibles](assets/conversation.png)
 
+_Generative UI — un rendu dédié par outil, trois des quatre cartes :_
+
+![Cinéma — recherche TMDB : affiche, année de sortie en très gros, note sur 10, synopsis et autres résultats](assets/generative-ui-cinema.png)
+
+![Vols — suivi en direct : anneau de progression du trajet, télémétrie et fiche appareil](assets/generative-ui-vol.png)
+
+![Météo — prévisions multi-jours : ciel piloté par la condition et ambiance animée](assets/generative-ui-meteo.png)
+
 | Côté            | Contenu                                                                                                                                                                                        |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, **17 outils**, mémoire long terme, store MongoDB, pas de `StateGraph` manuel                                |
@@ -220,11 +228,8 @@ n'apparaît pas, la réponse de l'agent reste.
 
 ### Captures
 
-![Agent cinéma — fiche séance TMDB : affiche, année en très gros, note, synopsis et autres résultats](assets/generative-ui-cinema.png)
-
-![Agent vols en direct — suivi de vol : anneau de progression, trajet animé, télémétrie et fiche appareil](assets/generative-ui-vol.png)
-
-![Agent météo — prévisions multi-jours, dégradé piloté par la condition et rais de lumière](assets/generative-ui-meteo.png)
+Les captures des trois cartes sont **en haut de ce README**. Le quatrième rendu, le tableau
+d'aéroport, s'obtient depuis la pastille « Agent vols en direct » de la landing page.
 
 ### Requêtes de démonstration
 
