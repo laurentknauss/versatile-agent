@@ -110,9 +110,9 @@ const Composer: FC<{ placeholder: string }> = ({ placeholder }) => {
         <ComposerPrimitive.AddAttachment asChild>
           <TooltipIconButton
             type="button"
-            tooltip="Add photos & files"
+            tooltip="Joindre des photos et des fichiers"
             side="top"
-            aria-label="Add attachment"
+            aria-label="Joindre un fichier"
             className="flex size-9 shrink-0 items-center justify-center rounded-full text-[#5d5d5d] transition-colors hover:bg-black/[0.07] hover:text-[#5d5d5d] dark:text-[#cdcdcd] dark:hover:bg-white/15 dark:hover:text-[#cdcdcd]"
           >
             <PlusIcon size={20} />
@@ -146,7 +146,7 @@ const ComposerPrimaryAction: FC = () => {
       <AuiIf condition={(s) => !s.thread.isRunning && s.composer.dictation != null}>
         <ComposerPrimitive.StopDictation
           className="flex size-9 items-center justify-center rounded-full bg-[#0d0d0d] text-white dark:bg-white dark:text-black"
-          aria-label="Stop dictation"
+          aria-label="Arrêter la dictée"
         >
           <div className="size-2.5 animate-pulse rounded-[2px] bg-current" />
         </ComposerPrimitive.StopDictation>
@@ -167,9 +167,9 @@ const ComposerPrimaryAction: FC = () => {
       >
         <ComposerPrimitive.Dictate asChild>
           <TooltipIconButton
-            tooltip="Dictate"
+            tooltip="Dicter"
             side="top"
-            aria-label="Dictate"
+            aria-label="Dicter"
             className="flex size-9 items-center justify-center rounded-full text-[#5d5d5d] transition-colors hover:bg-black/[0.07] hover:text-[#5d5d5d] dark:text-[#cdcdcd] dark:hover:bg-white/15 dark:hover:text-[#cdcdcd]"
           >
             <Mic className="size-5" />
@@ -184,7 +184,7 @@ const ThreadScrollToBottom: FC = () => {
   return (
     <ThreadPrimitive.ScrollToBottom asChild>
       <TooltipIconButton
-        tooltip="Scroll to bottom"
+        tooltip="Aller en bas"
         className="bg-background absolute -top-10 z-10 self-center rounded-full border p-2 disabled:invisible dark:border-white/15 dark:bg-[#2a2a2a]"
       >
         <ChevronDownIcon className="size-5" />
@@ -212,7 +212,7 @@ const UserMessage: FC = () => {
           className="flex items-center"
         >
           <ActionBarPrimitive.Copy asChild>
-            <TooltipIconButton tooltip="Copy" side="top" className={assistantActionClassName}>
+            <TooltipIconButton tooltip="Copier" side="top" className={assistantActionClassName}>
               <AuiIf condition={(s) => s.message.isCopied}>
                 <CheckIcon className="size-5" />
               </AuiIf>
@@ -222,7 +222,7 @@ const UserMessage: FC = () => {
             </TooltipIconButton>
           </ActionBarPrimitive.Copy>
           <ActionBarPrimitive.Edit asChild>
-            <TooltipIconButton tooltip="Edit" side="top" className={assistantActionClassName}>
+            <TooltipIconButton tooltip="Modifier" side="top" className={assistantActionClassName}>
               <PencilIcon className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Edit>
@@ -274,7 +274,7 @@ const AssistantMessage: FC = () => {
       <div className="-ml-2 flex items-center pt-1">
         <ActionBarPrimitive.Root hideWhenRunning className="flex items-center">
           <ActionBarPrimitive.Copy asChild>
-            <TooltipIconButton tooltip="Copy" side="top" className={assistantActionClassName}>
+            <TooltipIconButton tooltip="Copier" side="top" className={assistantActionClassName}>
               <AuiIf condition={(s) => s.message.isCopied}>
                 <CheckIcon className="size-5" />
               </AuiIf>
@@ -285,7 +285,7 @@ const AssistantMessage: FC = () => {
           </ActionBarPrimitive.Copy>
           <ActionBarPrimitive.FeedbackPositive asChild>
             <TooltipIconButton
-              tooltip="Good response"
+              tooltip="Bonne réponse"
               side="top"
               className={assistantActionClassName}
             >
@@ -294,7 +294,7 @@ const AssistantMessage: FC = () => {
           </ActionBarPrimitive.FeedbackPositive>
           <ActionBarPrimitive.FeedbackNegative asChild>
             <TooltipIconButton
-              tooltip="Bad response"
+              tooltip="Mauvaise réponse"
               side="top"
               className={assistantActionClassName}
             >
@@ -302,15 +302,19 @@ const AssistantMessage: FC = () => {
             </TooltipIconButton>
           </ActionBarPrimitive.FeedbackNegative>
           <ActionBarPrimitive.Speak asChild>
-            <TooltipIconButton tooltip="Read aloud" side="top" className={assistantActionClassName}>
+            <TooltipIconButton
+              tooltip="Lire à voix haute"
+              side="top"
+              className={assistantActionClassName}
+            >
               <Volume2 className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Speak>
-          <TooltipIconButton tooltip="Share" side="top" className={assistantActionClassName}>
+          <TooltipIconButton tooltip="Partager" side="top" className={assistantActionClassName}>
             <Share className="size-5" />
           </TooltipIconButton>
           <ActionBarPrimitive.Reload asChild>
-            <TooltipIconButton tooltip="Regenerate" side="top" className={assistantActionClassName}>
+            <TooltipIconButton tooltip="Régénérer" side="top" className={assistantActionClassName}>
               <RefreshCwIcon className="size-5" />
             </TooltipIconButton>
           </ActionBarPrimitive.Reload>
@@ -318,7 +322,7 @@ const AssistantMessage: FC = () => {
             <ActionBarMorePrimitive.Trigger asChild>
               <button
                 type="button"
-                aria-label="More"
+                aria-label="Plus d’options"
                 className={cn(
                   assistantActionClassName,
                   'data-[state=open]:bg-black/[0.07] dark:data-[state=open]:bg-white/15'
@@ -358,13 +362,13 @@ const BranchPicker: FC<{ className?: string }> = ({ className }) => {
       )}
     >
       <BranchPickerPrimitive.Previous asChild>
-        <TooltipIconButton tooltip="Previous" className="text-[#b4b4b4]">
+        <TooltipIconButton tooltip="Précédent" className="text-[#b4b4b4]">
           <ChevronLeftIcon className="size-5" />
         </TooltipIconButton>
       </BranchPickerPrimitive.Previous>
       <BranchPickerPrimitive.Number />/<BranchPickerPrimitive.Count />
       <BranchPickerPrimitive.Next asChild>
-        <TooltipIconButton tooltip="Next" className="text-[#b4b4b4]">
+        <TooltipIconButton tooltip="Suivant" className="text-[#b4b4b4]">
           <ChevronRightIcon className="size-5" />
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>
@@ -382,7 +386,7 @@ const ChatGPTAttachmentUI: FC = () => {
       <div className="bg-secondary flex items-center gap-2 overflow-hidden rounded-2xl border dark:bg-white/5">
         <AuiIf condition={(s) => s.attachment.type === 'image'}>
           {src ? (
-            <img className="size-32 rounded-md object-cover" alt="Attachment" src={src} />
+            <img className="size-32 rounded-md object-cover" alt="Fichier joint" src={src} />
           ) : (
             <div className="flex h-full w-12 items-center justify-center rounded-md">
               <AttachmentPrimitive.unstable_Thumb className="text-xs" />
