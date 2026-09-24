@@ -22,6 +22,8 @@ _Generative UI — un rendu dédié par outil :_
 
 ![Météo — prévisions multi-jours : ciel piloté par la condition et ambiance animée](assets/generative-ui-meteo.png)
 
+![Deux outils dans un même fil — carte cinéma et carte météo, chacune rendue par son propre composant](assets/generative-ui-deux-rendus.png)
+
 | Côté            | Contenu                                                                                                                                                                                        |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, **17 outils**, mémoire long terme, store MongoDB, pas de `StateGraph` manuel                                |
