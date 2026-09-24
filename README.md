@@ -16,7 +16,7 @@ _Generative UI — un rendu dédié par outil (démo vidéo, 25 s) :_
 
 https://github.com/user-attachments/assets/95eb4911-32a4-4da4-8d0b-dcd5f52c09fc
 
-_Fiche cinéma, suivi de vol en direct, carte météo — puis une réponse sans carte._
+_Fiche cinéma, suivi de vol en direct, carte météo._
 
 | Côté            | Contenu                                                                                                                                                                                        |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -222,7 +222,7 @@ n'apparaît pas, la réponse de l'agent reste.
 ### Démo
 
 La démo vidéo est **en haut de ce README** : elle enchaîne trois cartes rendues en situation
-(cinéma, vol, météo), puis une réponse sans carte. Le tableau d'aéroport s'obtient depuis la
+(cinéma, vol, météo). Le tableau d'aéroport s'obtient depuis la
 pastille « Agent vols en direct » de la landing page.
 
 ### Requêtes de démonstration
