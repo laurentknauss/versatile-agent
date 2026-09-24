@@ -14,7 +14,7 @@
 
 ![Landing page — Jeeves, prêt à répondre, composer vide](assets/landing-page.png)
 
-_Generative UI — un rendu dédié par outil, trois des quatre cartes :_
+_Generative UI — un rendu dédié par outil :_
 
 ![Cinéma — recherche TMDB : affiche, année de sortie en très gros, note sur 10, synopsis et autres résultats](assets/generative-ui-cinema.png)
 
