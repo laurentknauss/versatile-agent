@@ -67,9 +67,6 @@ export const ChatGPT: FC = () => {
             <ThreadPrimitive.ViewportFooter className="sticky bottom-0 mx-auto mt-auto flex w-full max-w-3xl flex-col gap-2 overflow-visible rounded-t-3xl pb-2">
               <ThreadScrollToBottom />
               <Composer placeholder="Posez votre question…" />
-              <p className="text-center text-xs text-white/70 dark:text-[#afafaf]">
-                ChatGPT can make mistakes. Check important info.
-              </p>
             </ThreadPrimitive.ViewportFooter>
           </ThreadPrimitive.Viewport>
         </AuiIf>
