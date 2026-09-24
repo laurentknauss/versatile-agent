@@ -12,7 +12,7 @@ import {
   useLangGraphRuntime,
   type LangChainMessage,
 } from '@assistant-ui/react-langgraph';
-import { ChatGPT } from '@/components/examples/chatgpt';
+import { ChatThread } from '@/components/chat/chat-thread';
 import { createClient } from '@/lib/chatApi';
 import { createLangGraphThreadListAdapter } from '@/lib/langgraph-thread-list-adapter';
 import { pdfAttachmentAdapter } from '@/lib/pdf-attachment-adapter';
@@ -70,7 +70,7 @@ export function Assistant() {
 
   return (
     <AssistantRuntimeProvider runtime={runtime} config={config}>
-      <ChatGPT />
+      <ChatThread />
     </AssistantRuntimeProvider>
   );
 }

@@ -38,7 +38,7 @@ import { MarkdownText } from '@/components/assistant-ui/elements/markdown-text';
 import { CapabilityStrip } from '@/components/assistant-ui/elements/capability-pictos';
 import { CloneThreadShell } from './clone-thread-shell';
 
-export const ChatGPT: FC = () => {
+export const ChatThread: FC = () => {
   return (
     <CloneThreadShell>
       <ThreadPrimitive.Root className="aui-chat-gradient flex h-full flex-col items-stretch bg-[linear-gradient(160deg,#0e4c92_0%,#1877f2_55%,#7db4f5_100%)] px-4 text-white dark:bg-black dark:text-[#ececec]">
@@ -102,7 +102,7 @@ const Composer: FC<{ placeholder: string }> = ({ placeholder }) => {
     <ComposerPrimitive.Root className="group/composer flex w-full flex-col rounded-[28px] border border-[#e5e5e5] bg-white px-2 py-2 focus-within:border-[#d0d0d0] dark:border-transparent dark:bg-[#212121] dark:focus-within:border-transparent">
       <AuiIf condition={(s) => s.composer.attachments.length > 0}>
         <div className="flex flex-row flex-wrap gap-2 px-1 pt-1 pb-2">
-          <ComposerPrimitive.Attachments components={{ Attachment: ChatGPTAttachmentUI }} />
+          <ComposerPrimitive.Attachments components={{ Attachment: ChatAttachmentUI }} />
         </div>
       </AuiIf>
 
@@ -197,7 +197,7 @@ const UserMessage: FC = () => {
   return (
     <MessagePrimitive.Root className="relative mx-auto flex w-full max-w-3xl flex-col items-end gap-1">
       <div className="flex flex-row flex-wrap justify-end gap-2">
-        <MessagePrimitive.Attachments components={{ Attachment: ChatGPTAttachmentUI }} />
+        <MessagePrimitive.Attachments components={{ Attachment: ChatAttachmentUI }} />
       </div>
 
       <div className="max-w-[70%] rounded-[22px] bg-white px-4 py-2.5 leading-6 text-[#0d0d0d] shadow-sm dark:bg-[#ececec] dark:text-[#0d0d0d]">
@@ -376,7 +376,7 @@ const BranchPicker: FC<{ className?: string }> = ({ className }) => {
   );
 };
 
-const ChatGPTAttachmentUI: FC = () => {
+const ChatAttachmentUI: FC = () => {
   const aui = useAui();
   const isComposer = aui.attachment.source !== 'message';
   const src = useAttachmentSrc();
