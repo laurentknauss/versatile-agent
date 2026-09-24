@@ -101,7 +101,6 @@ versatile-agent/
 │   └── lib/tool-result.ts    ← Déballage des résultats d'outils (objet ou message d'échec)
 ├── langsmith-workflows/      ← Scripts d'évaluation LangSmith (paquet npm autonome)
 ├── okf/                      ← Documentation locale (Open Knowledge Format)
-├── assets/                   ← Captures du README
 ├── .env.example              ← Variables d'environnement (template)
 ├── langgraph.json            ← Config LangGraph CLI
 ├── vitest.config.ts          ← Config Vitest
