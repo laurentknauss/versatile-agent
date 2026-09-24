@@ -4,21 +4,22 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.4-blue)](https://langchain-ai.github.io/langgraphjs/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![assistant-ui](https://img.shields.io/badge/assistant--ui-latest-purple)](https://assistant-ui.com/)
+[![Generative UI](https://img.shields.io/badge/generative--UI-4%20rendus-8b5cf6)](assistant-ui/app/toolkit.tsx)
 [![createAgent v1](https://img.shields.io/badge/LangGraph-v1%20createAgent-brightgreen)](https://github.com/laurentknauss/versatile-agent/tree/main)
 [![pnpm](https://img.shields.io/badge/pnpm-12.3-F69220?logo=pnpm)](https://pnpm.io/)
-[![Tests](https://img.shields.io/badge/tests-135%20passing-success)](src/tools/__tests__)
+[![Tests](https://img.shields.io/badge/tests-158%20passing-success)](src/tools/__tests__)
 [![License](https://img.shields.io/badge/license-MIT-green)](package.json)
 
-> **Monorepo frontend + backend : agent LangGraph v1 (`createAgent`, 14 outils, mémoire long terme) et landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 135 tests Vitest, pnpm.**
+> **Monorepo frontend + backend : agent LangGraph v1 (`createAgent`, 17 outils, mémoire long terme, `Generative UI` — une carte par outil rendu) et landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 158 tests Vitest, pnpm.**
 
 ![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
 
-![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; les appels d'outils ne sont pas montrés à l'utilisateur, seule la réponse s'affiche](assets/conversation.png)
+![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; chaque outil rendu affiche sa propre carte, les appels d'outils sans rendu restent invisibles](assets/conversation.png)
 
-| Côté            | Contenu                                                                                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, **14 outils**, mémoire long terme, store MongoDB, pas de `StateGraph` manuel |
-| **🖥️ Frontend** | Landing page **ChatGPT-like** dans `assistant-ui/` — Next.js 16, sidebar d'historique (lister / renommer / supprimer), streaming SSE, proxy API                 |
+| Côté            | Contenu                                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **⚙️ Backend**  | Agent LangGraph v1 dans `src/` + `langgraph.json` — `createAgent`, DeepSeek Flash, **17 outils**, mémoire long terme, store MongoDB, pas de `StateGraph` manuel                                |
+| **🖥️ Frontend** | Landing page **ChatGPT-like** dans `assistant-ui/` — Next.js 16, **Generative UI** (une carte par outil rendu), sidebar d'historique (lister / renommer / supprimer), streaming SSE, proxy API |
 
 ---
 
@@ -35,21 +36,23 @@ La migration s'est faite dans ce sens : **la v1 est passée en production sur `m
 
 ## ✨ Fonctionnalités
 
-| Capacité                  | Détail                                                                                                             |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`                      |
-| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité de précipitations) via OpenWeatherMap           |
-| **🪙 Crypto**             | Prix et market data via CoinGecko (multi-devises, filtres catégorie / IDs, multi-timeframe, pagination)            |
-| **🎬 Cinéma**             | Recherche dans la base TMDB — titre, date de sortie, note, résumé localisé, URL d'affiche                          |
-| **🔍 Recherche web**      | Recherche web via Tavily                                                                                           |
-| **💳 Stripe**             | Compte, solde, clients, paiements (API Stripe)                                                                     |
-| **📄 Documents**          | Lecture PDF par URL ou fichier local (racines autorisées, plafond de taille, recherche par mot-clé avec contexte)  |
-| **🧮 Utilitaires**        | Heure locale courante, nombre aléatoire dans un intervalle                                                         |
-| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore`), namespace `memories/<userId>`           |
-| **⏱️ Résilience réseau**  | Échéance sur **chaque** appel sortant : 15 s par requête HTTP, 10 s × 1 retry pour Stripe, 5 s / 20 s pour MongoDB |
-| **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués à l'utilisateur                                       |
-| **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                    |
-| **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français      |
+| Capacité                  | Détail                                                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **🧠 Agent IA**           | DeepSeek Flash (`deepseek-flash`) via `ChatDeepSeek`, cycle ReAct outillé par `createAgent()`                                            |
+| **🌤️ Météo**              | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité de précipitations) via OpenWeatherMap                                 |
+| **🪙 Crypto**             | Prix et market data via CoinGecko (multi-devises, filtres catégorie / IDs, multi-timeframe, pagination)                                  |
+| **🎬 Cinéma**             | Recherche dans la base TMDB — titre, date de sortie, note, résumé localisé, URL d'affiche                                                |
+| **🔍 Recherche web**      | Recherche web via Tavily                                                                                                                 |
+| **💳 Stripe**             | Compte, solde, clients, paiements (API Stripe)                                                                                           |
+| **📄 Documents**          | Lecture PDF par URL ou fichier local (racines autorisées, plafond de taille, recherche par mot-clé avec contexte)                        |
+| **🧮 Utilitaires**        | Heure locale courante, nombre aléatoire dans un intervalle                                                                               |
+| **🧠 Mémoire long terme** | `saveMemory` / `recallMemories` via le `store` LangGraph (`MongoDBStore`), namespace `memories/<userId>`                                 |
+| **⏱️ Résilience réseau**  | Échéance sur **chaque** appel sortant : 15 s par requête HTTP, 10 s × 1 retry pour Stripe, 5 s / 20 s pour MongoDB                       |
+| **💬 Chat UI**            | Interface assistant-ui (Next.js 16), appels d'outils masqués puis remplacés par la carte de l'outil rendu                                |
+| **📜 Threads**            | Historique persistant des conversations (sidebar : lister, renommer, supprimer)                                                          |
+| **🎙️ Dictée vocale**      | Micro du composer (`WebSpeechDictationAdapter`) : la voix est transcrite dans le champ de saisie, en français                            |
+| **✈️ Aviation**           | Vol en temps réel (`flightTracker`), départs/arrivées d'un aéroport (`airportBoard`), résolution de codes (`aviationLookup`) via AirLabs |
+| **🎨 Generative UI**      | 4 outils rendus affichent une carte dédiée — aéroport (FIDS), météo (ciel piloté par la donnée), vol (radar), cinéma (fiche séance)      |
 
 ### 🎙️ Dictée vocale — deux contraintes
 
@@ -69,7 +72,7 @@ versatile-agent/
 ├── src/
 │   ├── agentWithTools.ts     ← Agent LangGraph v1 (createAgent + tools + store)
 │   └── tools/                ← Boîte à outils modulaire
-│       ├── tools.ts          ← Agrégateur : ALL_TOOLS_LIST (les 14 outils exposés)
+│       ├── tools.ts          ← Agrégateur : ALL_TOOLS_LIST (les 17 outils exposés)
 │       ├── weatherTool.ts    ← OpenWeatherMap
 │       ├── geckoTool.ts      ← CoinGecko (coinGeckoPrice, coinGeckoMarket)
 │       ├── movieTool.ts      ← TMDB (tmdbSearch)
@@ -79,13 +82,21 @@ versatile-agent/
 │       ├── memoryTools.ts    ← Mémoire long terme (saveMemory, recallMemories)
 │       ├── currentTimeTool.ts
 │       ├── randomNumberTool.ts ← Nombre aléatoire dans un intervalle
-│       ├── __tests__/        ← 135 tests Vitest (9 fichiers, fixtures/)
+│       ├── __tests__/        ← 158 tests Vitest (10 fichiers, fixtures/)
 │       └── types/            ← Types par outil (gecko, weather, movie, stripe, pdf, common)
 ├── assistant-ui/             ← Frontend Next.js 16 + assistant-ui
 │   ├── app/
 │   │   ├── page.tsx          ← Page principale (chat)
+│   │   ├── toolkit.tsx       ← Generative UI : nom d'outil → composant de rendu
 │   │   └── api/[..._path]/   ← Proxy API vers LangGraph
-│   └── components/
+│   ├── components/assistant-ui/elements/
+│   │   ├── airport-board.aui.tsx   ← Tableau d'aéroport (FIDS)
+│   │   ├── weather-card.aui.tsx    ← Météo (ciel piloté par la donnée)
+│   │   ├── flight-tracker.aui.tsx  ← Suivi de vol (carte + anneau de progression)
+│   │   ├── movie-card.aui.tsx      ← Cinéma TMDB (affiche + fiche séance)
+│   │   ├── border-beam.tsx         ← Comète de bordure (portage Magic UI sans dépendance)
+│   │   └── tool-fallback.aui.tsx   ← Rendu générique des outils non rendus
+│   └── lib/tool-result.ts    ← Déballage des résultats d'outils (objet ou message d'échec)
 ├── langsmith-workflows/      ← Scripts d'évaluation LangSmith (paquet npm autonome)
 ├── okf/                      ← Documentation locale (Open Knowledge Format)
 ├── assets/                   ← Captures du README
@@ -177,6 +188,59 @@ clé invalide), les outils renvoient un **message court** au modèle au lieu de 
   ],
 }
 ```
+
+---
+
+## 🎨 Generative UI — une carte par outil
+
+Un appel d'outil n'affiche pas de JSON : le résultat est **typé par le nom de l'outil** puis confié à
+un composant React qui en fait une carte. Le graphe exécute l'outil, le navigateur ne fait que le
+rendre.
+
+```
+tool_call "airportBoard" ──► graphe LangGraph (src/tools/*) ──► payload JSON
+                                    │
+          app/toolkit.tsx ──────────┘  airportBoard → render: <AirportBoardTable args result />
+                                    │
+                                    ▼
+                          carte rendue dans le fil de discussion
+```
+
+`defineToolkit()` (`assistant-ui/app/toolkit.tsx`) associe chaque nom d'outil à son rendu, et
+`externalTool()` déclare que l'exécution reste côté graphe : aucun schéma publié, aucun exécuteur
+dans le bundle client. Les outils sans rendu dédié retombent sur `tool-fallback.aui.tsx` — la carte
+n'apparaît pas, la réponse de l'agent reste.
+
+| Outil            | Carte                     | Ce qui pilote le rendu                                                                                                                                                                                                                       |
+| ---------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `airportBoard`   | Tableau d'aéroport (FIDS) | Noir ardoise et rail ambre, heures en `font-mono`, états en pastilles (posé / parti, retardé, annulé), codeshares fusionnés sur la ligne du vol réellement opéré                                                                             |
+| `openWeatherMap` | Météo multi-jours         | **Le ciel suit la donnée** : la carte prend le dégradé de la condition la plus marquante des jours affichés — rais de lumière sur ciel dégagé, rideau de pluie, flocons ou flash d'orage selon la météo                                      |
+| `flightTracker`  | Suivi de vol              | Tracé pointillé parcouru par un point lumineux animé, **anneau de progression** du trajet (82 % sur la capture), tuiles de télémétrie (position, altitude, vitesse, cap) et fiche appareil (immatriculation, code hex, dernier signal ADS-B) |
+| `tmdbSearch`     | Fiche séance cinéma       | Affiche TMDB, année en très gros et « sorti il y a N ans », anneau de note coloré par le score, accent **par époque** (classique / argentique / moderne / numérique), vignettes des autres résultats                                         |
+
+### Captures
+
+![Agent cinéma — fiche séance TMDB : affiche, année en très gros, note, synopsis et autres résultats](assets/generative-ui-cinema.png)
+
+![Agent vols en direct — suivi de vol : anneau de progression, trajet animé, télémétrie et fiche appareil](assets/generative-ui-vol.png)
+
+![Agent météo — prévisions multi-jours, dégradé piloté par la condition et rais de lumière](assets/generative-ui-meteo.png)
+
+### Requêtes de démonstration
+
+| Question                                                                 | Outil            | Carte             |
+| ------------------------------------------------------------------------ | ---------------- | ----------------- |
+| _« Quand le Fabuleux Destin d'Amélie Poulain est-il sorti au cinéma ? »_ | `tmdbSearch`     | Fiche séance      |
+| _« Où se trouve le vol U24573 en ce moment ? »_                          | `flightTracker`  | Suivi de vol      |
+| _« Quel temps fera-t-il à Paris sur les 3 prochains jours ? »_           | `openWeatherMap` | Météo multi-jours |
+
+### Animations : portées, pas importées
+
+La comète qui parcourt le cadre (`BorderBeam`), les rais de lumière et le balayage du radar sont
+**écrits dans le dépôt** (`assistant-ui/components/assistant-ui/elements/border-beam.tsx`, keyframes
+dans `app/globals.css`) plutôt qu'importés de Magic UI : les composants d'origine exigent `motion`, et
+le projet suit déjà ce patron avec son propre `shine-border.tsx`. Aucune dépendance ajoutée, donc
+aucun poids supplémentaire dans le bundle client.
 
 ---
 
@@ -284,20 +348,23 @@ Le driver MongoDB refuse un doublon d'option dans la chaîne de connexion : `app
 
 ## 🛠️ Outils disponibles
 
-14 outils sont exposés au graphe (`ALL_TOOLS_LIST` dans `src/tools/tools.ts`) :
+17 outils sont exposés au graphe (`ALL_TOOLS_LIST` dans `src/tools/tools.ts`) :
 
-| Outil                                                                                       | Description                                                                | Source         |
-| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------- |
-| `tavilySearch`                                                                              | Recherche web                                                              | Tavily API     |
-| `openWeatherMap`                                                                            | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité)        | OpenWeatherMap |
-| `coinGeckoPrice`                                                                            | Prix crypto structurés (multi-devises, market cap, volume, variation 24 h) | CoinGecko      |
-| `coinGeckoMarket`                                                                           | Market data (cap, volume, rang, filtres catégorie / IDs, pagination)       | CoinGecko      |
-| `tmdbSearch`                                                                                | Recherche de films : date de sortie, note, résumé localisé, affiche        | TMDB           |
-| `stripeAccountInfo` / `stripeCustomersList` / `stripeCreateCustomer` / `stripeRecentEvents` | Compte, solde, clients, paiements                                          | Stripe API     |
-| `readPdf`                                                                                   | Extraction de texte PDF (URL ou fichier local), recherche par mot-clé      | `unpdf`        |
-| `saveMemory` / `recallMemories`                                                             | Mémoire long terme par utilisateur                                         | MongoDB store  |
-| `currentTime`                                                                               | Heure locale `HH:MM:SS`                                                    | Interne        |
-| `randomNumber`                                                                              | Nombre aléatoire dans un intervalle                                        | Interne        |
+| Outil                                                                                       | Description                                                                                                   | Source         |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------- |
+| `tavilySearch`                                                                              | Recherche web                                                                                                 | Tavily API     |
+| `openWeatherMap`                                                                            | Prévisions enrichies (vent, humidité, pluie, ressenti, probabilité)                                           | OpenWeatherMap |
+| `coinGeckoPrice`                                                                            | Prix crypto structurés (multi-devises, market cap, volume, variation 24 h)                                    | CoinGecko      |
+| `coinGeckoMarket`                                                                           | Market data (cap, volume, rang, filtres catégorie / IDs, pagination)                                          | CoinGecko      |
+| `tmdbSearch`                                                                                | Recherche de films : date de sortie, note, résumé localisé, affiche                                           | TMDB           |
+| `flightTracker`                                                                             | Suivi d'un vol en temps réel par n° IATA : statut, horaires, retard, terminal, porte, position live, appareil | AirLabs        |
+| `airportBoard`                                                                              | Départs ou arrivées d'un aéroport : mouvements, codeshares fusionnés, heure locale                            | AirLabs        |
+| `aviationLookup`                                                                            | Résout un nom de ville ou de compagnie en codes IATA / ICAO avant les deux autres                             | AirLabs        |
+| `stripeAccountInfo` / `stripeCustomersList` / `stripeCreateCustomer` / `stripeRecentEvents` | Compte, solde, clients, paiements                                                                             | Stripe API     |
+| `readPdf`                                                                                   | Extraction de texte PDF (URL ou fichier local), recherche par mot-clé                                         | `unpdf`        |
+| `saveMemory` / `recallMemories`                                                             | Mémoire long terme par utilisateur                                                                            | MongoDB store  |
+| `currentTime`                                                                               | Heure locale `HH:MM:SS`                                                                                       | Interne        |
+| `randomNumber`                                                                              | Nombre aléatoire dans un intervalle                                                                           | Interne        |
 
 ### 💬 Exemples de requêtes
 
@@ -372,7 +439,7 @@ déclenche `recallMemories` et répond depuis la base.
 | `pnpm lint`                              | ESLint                                             |
 | `pnpm format`                            | Prettier                                           |
 | `pnpm lint:fix`                          | ESLint avec auto-fix                               |
-| `pnpm test`                              | Tests Vitest (135 tests, 9 fichiers)               |
+| `pnpm test`                              | Tests Vitest (158 tests, 10 fichiers)              |
 | `pnpm test:watch`                        | Tests en mode watch                                |
 
 Les tests d'intégration réseaux (ex. `pdfReader.real.test.ts`) se **sautent proprement** quand leur
