@@ -50,11 +50,26 @@ async function handleRequest(req: NextRequest, method: string) {
       headers,
     });
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      const typedError = e as Error & { status?: number };
-      return NextResponse.json({ error: typedError.message }, { status: typedError.status ?? 500 });
+    // ⚠️ Un échec côté amont n'est pas une erreur interne : tout aplatir en 500
+    // affichait « API error: 500 » dans le fil d'assistant-ui (vécu le 2026-09-24)
+    // alors que la cause était un `langgraph dev` redémarré en plein run — une
+    // édition dans src/ suffit à le relancer. On distingue donc les trois cas.
+    if (req.signal.aborted || (e instanceof Error && e.name === 'AbortError')) {
+      // Le client a annulé (rechargement, HMR, bouton « stop ») : personne ne lit
+      // cette réponse, et 499 évite de la présenter comme une panne serveur.
+      return new NextResponse(null, { status: 499, headers: getCorsHeaders() });
     }
-    return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+
+    if (e instanceof TypeError) {
+      // `fetch` rejette en TypeError quand l'amont est injoignable ou refusé.
+      return NextResponse.json(
+        { error: `LangGraph injoignable sur ${process.env.LANGGRAPH_API_URL} : ${e.message}` },
+        { status: 502, headers: getCorsHeaders() }
+      );
+    }
+
+    const message = e instanceof Error ? e.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500, headers: getCorsHeaders() });
   }
 }
 

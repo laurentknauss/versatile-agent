@@ -43,6 +43,9 @@ const CinemaVisual = agentVisual('/agents/camera.png', 256, 254);
 /** Carte bancaire (`public/agents/card.png`) : paiements Stripe. */
 const StripeVisual = agentVisual('/agents/card.png', 256, 249);
 
+/** Avion de ligne (`public/agents/plane.png`) : suivi de vol en direct. */
+const FlightVisual = agentVisual('/agents/plane.png', 256, 149);
+
 type Capability = {
   label: string;
   hint: string;
@@ -98,6 +101,15 @@ const CAPABILITIES: Capability[] = [
     Visual: CinemaVisual,
     visualClassName: 'size-10',
     prompt: 'Quand le Fabuleux Destin d’Amélie Poulain est-il sorti au cinéma ?',
+    autoSend: true,
+  },
+  {
+    label: 'Agent vols en direct',
+    hint: 'Suivi de vol AirLabs — position, retard, terminal et porte. Cliquez pour lancer la démo.',
+    tile: 'from-cyan-500 to-blue-800',
+    Visual: FlightVisual,
+    visualClassName: 'size-10',
+    prompt: 'Où se trouve le vol U24573 en ce moment ?',
     autoSend: true,
   },
 ];

@@ -2,14 +2,22 @@ import { ChatDeepSeek } from '@langchain/deepseek';
 import { ChatOpenAI } from '@langchain/openai';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
-import { createAgent, createMiddleware, type BuiltInState, AIMessage } from 'langchain';
-import OpenAI from 'openai'; // important  pour  la moderation beforeHook avec omni-moderation-latest
+import { createAgent } from 'langchain';
+// ⚠️ Modération de contenu désactivée le 2026-09-24 (crédits OpenAI épuisés) — le hook
+// appelait omni-moderation-latest à CHAQUE appel modèle, donc une clé OpenAI sans crédit
+// faisait échouer tout run en 401 avant la moindre réponse. Voir le bloc plus bas.
+// import { createMiddleware, type BuiltInState, AIMessage } from 'langchain';
+// import OpenAI from 'openai'; // important pour la moderation beforeHook avec omni-moderation-latest
 import { ALL_TOOLS_LIST } from './tools/tools';
 
 const SYSTEM_PROMPT = `
 GENERAL BEHAVIOR:
 - You are a helpful assistant with access to tools and web research capabilities.
-- Respond to the user in French with a respectful, professional, and concise tone.
+- LANGUE — Réponds UNIQUEMENT en français, dès le premier mot du premier message, y compris
+  la phrase courte qui annonce un appel d'outil (« Je vérifie… », « Je regarde… »).
+  Aucun mot anglais : ni préambule anglais, ni ligne de statut en anglais, ni terme anglais
+  isolé dans une réponse par ailleurs française.
+- Ton : respectueux, professionnel, concis.
 - Answer directly when the user's intent is clear.
 - If the request is ambiguous, ask for clarification.
 - Never invent facts, tool results, prices, dates, or account information.
@@ -68,6 +76,13 @@ ERROR HANDLING:
 - Do not expose internal stack traces or implementation details unless explicitly requested.
 `;
 
+/*
+ * ⚠️ MODÉRATION DE CONTENU DÉSACTIVÉE — 2026-09-24 (crédits OpenAI épuisés).
+ * Ce hook appelait `omni-moderation-latest` à CHAQUE appel modèle : avec une clé OpenAI
+ * invalide ou sans crédit, le run mourait en 401 avant la moindre réponse, d'où un
+ * chatbot qui ne réagissait plus du tout. À décommenter (avec les imports associés
+ * ci-dessus et la ligne `middleware:` en bas du fichier) quand la modération revient.
+ *
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -104,6 +119,7 @@ const moderationMiddleware = createMiddleware({
     canJumpTo: ['end'],
   },
 });
+*/
 
 // Model registry — switch provider at launch with CHAT_MODEL (default: deepseek).
 // CHAT_MODEL=kimi pnpm dev  →  run on Kimi (Moonshot, OpenAI-compatible API)
@@ -186,5 +202,5 @@ export const agent = createAgent({
   tools: ALL_TOOLS_LIST,
   store,
   systemPrompt: SYSTEM_PROMPT,
-  middleware: [moderationMiddleware],
+  // middleware: [moderationMiddleware], // désactivé avec la modération de contenu (voir plus haut)
 });

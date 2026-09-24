@@ -264,8 +264,11 @@ const AssistantMessage: FC = () => {
         <MessagePrimitive.Parts>
           {({ part }) => {
             // Tool calls are machinery, not conversation: only text reaches the
-            // user, every other part is dropped from the thread.
+            // user. The exception is a tool with a registered renderer (see
+            // app/aviation-toolkit.tsx) — it draws its own card, everything else
+            // that isn't text stays silent.
             if (part.type === 'text') return <MarkdownText />;
+            if (part.type === 'tool-call') return part.toolUI ?? null;
             return null;
           }}
         </MessagePrimitive.Parts>

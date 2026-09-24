@@ -1,7 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { AssistantRuntimeProvider, WebSpeechDictationAdapter } from '@assistant-ui/react';
+import {
+  AssistantRuntimeProvider,
+  AuiConfig,
+  Tools,
+  WebSpeechDictationAdapter,
+} from '@assistant-ui/react';
 import {
   unstable_createLangGraphStream,
   useLangGraphRuntime,
@@ -11,6 +16,7 @@ import { ChatGPT } from '@/components/examples/chatgpt';
 import { createClient } from '@/lib/chatApi';
 import { createLangGraphThreadListAdapter } from '@/lib/langgraph-thread-list-adapter';
 import { pdfAttachmentAdapter } from '@/lib/pdf-attachment-adapter';
+import toolkit from './toolkit';
 
 const ASSISTANT_ID = process.env['NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID']!;
 
@@ -29,6 +35,9 @@ export function Assistant() {
     [client]
   );
   const threadListAdapter = useMemo(() => createLangGraphThreadListAdapter(client), [client]);
+  // Rendus d'outils : les appels `flightTracker`, `airportBoard` et `openWeatherMap`
+  // sont dessinés par les composants du toolkit au lieu du repli brut (voir app/toolkit.tsx).
+  const config = useMemo(() => AuiConfig({ tools: Tools({ toolkit }) }), []);
 
   const runtime = useLangGraphRuntime({
     unstable_allowCancellation: true,
@@ -60,7 +69,7 @@ export function Assistant() {
   });
 
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
+    <AssistantRuntimeProvider runtime={runtime} config={config}>
       <ChatGPT />
     </AssistantRuntimeProvider>
   );
