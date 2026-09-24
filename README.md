@@ -12,6 +12,8 @@
 
 > **Monorepo frontend + backend : agent LangGraph v1 (`createAgent`, 17 outils, mémoire long terme, `Generative UI` — une carte par outil rendu) et landing page ChatGPT-like (assistant-ui + Next.js 16) — streaming, historique des conversations, 158 tests Vitest, pnpm.**
 
+![Landing page — Jeeves, prêt à répondre, composer vide](assets/landing-page.png)
+
 _Generative UI — un rendu dédié par outil, trois des quatre cartes :_
 
 ![Cinéma — recherche TMDB : affiche, année de sortie en très gros, note sur 10, synopsis et autres résultats](assets/generative-ui-cinema.png)
@@ -496,8 +498,6 @@ Le dossier `okf/` contient la documentation auto-suffisante (format _Open Knowle
 ---
 
 ## 📸 Captures de l'application
-
-![Landing page — historique des conversations à gauche, composer au centre](assets/landing-page.png)
 
 ![Conversation — météo sur 3 jours, recherche de film et prix du bitcoin ; chaque outil rendu affiche sa propre carte, les appels d'outils sans rendu restent invisibles](assets/conversation.png)
 
