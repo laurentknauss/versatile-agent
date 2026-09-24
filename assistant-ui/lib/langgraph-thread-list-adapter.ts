@@ -68,6 +68,31 @@ const firstUserText = (messages: readonly ThreadMessage[]): string => {
     .trim();
 };
 
+/**
+ * `client.threads.getState` renvoie les messages au format LangChain
+ * (`type: 'human'`) et non au format assistant-ui (`role: 'user'`) : relire un
+ * thread depuis l'API demande donc son propre extracteur.
+ */
+const firstLangChainUserText = (messages: readonly unknown[]): string => {
+  const userMessage = messages.find(
+    (message): message is { type?: string; content?: unknown } =>
+      typeof message === 'object' &&
+      message !== null &&
+      (message as { type?: string }).type === 'human'
+  );
+  const content = userMessage?.content;
+  if (typeof content === 'string') return content;
+  if (!Array.isArray(content)) return '';
+  return content
+    .map((part: unknown) =>
+      typeof part === 'object' && part !== null && (part as { type?: string }).type === 'text'
+        ? String((part as { text?: unknown }).text ?? '')
+        : ''
+    )
+    .join(' ')
+    .trim();
+};
+
 export const createLangGraphThreadListAdapter = (client: Client): RemoteThreadListAdapter => {
   /** Read current metadata and merge a title into it before persisting. */
   const persistTitle = async (remoteId: string, title: string) => {
@@ -82,19 +107,19 @@ export const createLangGraphThreadListAdapter = (client: Client): RemoteThreadLi
   };
 
   /**
-   * A thread is a real conversation only once it holds a message. Pressing
-   * "Nouveau chat" creates an empty thread server-side, and those shells used
-   * to pile up in the sidebar as a wall of identical placeholders.
+   * Message count + first question of a thread, in the single `getState` call
+   * the list already needs. A thread written to by anything other than this UI
+   * (a script, another client) keeps an empty `metadata.title`, so its state is
+   * the only place its question exists.
    */
-  const hasMessages = async (remoteId: string): Promise<boolean> => {
+  const readState = async (remoteId: string): Promise<{ messages: number; question: string }> => {
     try {
-      const state = await client.threads.getState<{
-        messages?: readonly unknown[];
-      }>(remoteId);
-      return (state.values?.['messages']?.length ?? 0) > 0;
+      const state = await client.threads.getState<{ messages?: readonly unknown[] }>(remoteId);
+      const messages = state.values?.['messages'] ?? [];
+      return { messages: messages.length, question: firstLangChainUserText(messages) };
     } catch {
       // Unreadable state: never treat it as empty, an error must not delete.
-      return true;
+      return { messages: 1, question: '' };
     }
   };
 
@@ -121,12 +146,14 @@ export const createLangGraphThreadListAdapter = (client: Client): RemoteThreadLi
           // A persisted title means the thread was used: show it as is.
           if (metadata.title) return metadata;
 
-          if (await hasMessages(thread.thread_id)) {
-            // Conversation whose title was never persisted (best-effort):
-            // fall back to a dated label rather than another placeholder.
+          const state = await readState(thread.thread_id);
+          if (state.messages > 0) {
+            // A persisted title only comes from this UI's `generateTitle`.
+            // Without one, the thread's own first question beats a dated label
+            // that every thread created in the same minute would share.
             return {
               ...metadata,
-              title: formatFallbackTitle(thread.created_at),
+              title: cleanTitle(state.question) || formatFallbackTitle(thread.created_at),
             };
           }
 
