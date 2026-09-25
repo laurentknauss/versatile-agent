@@ -99,7 +99,6 @@ versatile-agent/
 │   │   ├── border-beam.tsx         ← Comète de bordure (portage Magic UI sans dépendance)
 │   │   └── tool-fallback.aui.tsx   ← Rendu générique des outils non rendus
 │   └── lib/tool-result.ts    ← Déballage des résultats d'outils (objet ou message d'échec)
-├── langsmith-workflows/      ← Scripts d'évaluation LangSmith (paquet npm autonome)
 ├── okf/                      ← Documentation locale (Open Knowledge Format)
 ├── .env.example              ← Variables d'environnement (template)
 ├── langgraph.json            ← Config LangGraph CLI
@@ -304,8 +303,6 @@ pnpm dev:frontend     # Next.js seul    → http://localhost:3000 (Chat UI)
 | `PDF_MAX_CHARS`                                                 | `40000`      | Caractères rendus au modèle                                                             |
 | `PDF_ALLOWED_DIRS`                                              | cwd + `/tmp` | Racines autorisées pour la lecture locale                                               |
 | `LANGSMITH_TRACING` / `LANGSMITH_API_KEY` / `LANGSMITH_PROJECT` | —            | Tracing LangSmith                                                                       |
-
-`OPENAI_API_KEY` n'est **pas** utilisée par l'agent : seuls les scripts d'évaluation de `langsmith-workflows/` (paquet autonome, ses propres dépendances) s'en servent.
 
 ---
 

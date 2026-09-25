@@ -34,6 +34,10 @@ CLAUDE.md
 # Local docs (not for remote)
 documentation/
 okf/
+TODO.md
+dealing-with-long-term-memory.md
+moderation-dans-le-code.md
+langsmith-workflows/
 
 # PDFs (local analysis, not source)
 *.pdf
