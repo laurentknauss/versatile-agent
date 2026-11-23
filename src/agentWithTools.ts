@@ -1,4 +1,3 @@
-import { ChatDeepSeek } from '@langchain/deepseek';
 import { ChatOpenAI } from '@langchain/openai';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { MongoDBStore } from '@langchain/langgraph-checkpoint-mongodb';
@@ -131,22 +130,46 @@ const moderationMiddleware = createMiddleware({
 });
 */
 
-// Model registry — switch provider at launch with CHAT_MODEL (default: deepseek).
-// CHAT_MODEL=kimi pnpm dev  →  run on Kimi (Moonshot, OpenAI-compatible API)
+// All model calls go through the LiteLLM AI Gateway.
+// LiteLLM owns provider credentials, routing, aliases and policy; this agent only
+// knows the gateway endpoint and the model aliases configured there.
+//
+// Expected LiteLLM aliases: "deepseek", "kimi", "qwen".
+const LITELLM_BASE_URL = process.env.LITELLM_BASE_URL ?? 'http://localhost:4000/v1';
+const LITELLM_API_KEY = process.env.LITELLM_API_KEY;
+
+if (!LITELLM_API_KEY) {
+  throw new Error('LITELLM_API_KEY is required');
+}
+
 const MODEL_REGISTRY = {
-  deepseek: () => new ChatDeepSeek({ model: 'deepseek-flash', streaming: true }),
+  deepseek: () =>
+    new ChatOpenAI({
+      model: 'deepseek',
+      apiKey: LITELLM_API_KEY,
+      configuration: { baseURL: LITELLM_BASE_URL },
+      streaming: true,
+    }),
   kimi: () =>
     new ChatOpenAI({
-      // ⚠️ nom de modèle à confirmer chez Moonshot
-      model: 'kimi-k3',
-      apiKey: process.env.MOONSHOT_API_KEY,
-      configuration: { baseURL: 'https://api.moonshot.ai/v1' },
+      model: 'kimi',
+      apiKey: LITELLM_API_KEY,
+      configuration: { baseURL: LITELLM_BASE_URL },
+      streaming: true,
+    }),
+  qwen: () =>
+    new ChatOpenAI({
+      model: 'qwen',
+      apiKey: LITELLM_API_KEY,
+      configuration: { baseURL: LITELLM_BASE_URL },
       streaming: true,
     }),
 } satisfies Record<string, () => BaseChatModel>;
 
 type ModelKey = keyof typeof MODEL_REGISTRY;
 
+// Choose an alias at startup for now. The UI/runtime model selection will be
+// implemented separately and can resolve this registry dynamically.
 const modelKey = (process.env.CHAT_MODEL ?? 'deepseek') as ModelKey;
 if (!(modelKey in MODEL_REGISTRY)) {
   throw new Error(
